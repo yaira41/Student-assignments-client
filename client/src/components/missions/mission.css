@@ -1,0 +1,9 @@
+.mission-block {
+  display: flex;
+  direction: rtl;
+}
+
+.mission-content {
+  padding: 2rem;
+  size: 10px;
+}
