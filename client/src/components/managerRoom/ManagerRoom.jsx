@@ -1,10 +1,6 @@
-import SelectClass from '../selectClass/SelectClass';
 import * as xlsx from 'xlsx';
-import { useState } from 'react';
-import dataService from '../../utils/dataService';
 
 export default function ManagerRoom() {
-    const [excelData, setExcelData] = useState([])
 
     const readExcel = async(e) =>{
         const file = e.target.files[0];
