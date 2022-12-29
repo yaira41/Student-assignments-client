@@ -1,5 +1,3 @@
-import config from "./config";
-import communicationService from "./communicatorService";
 import { Amplify, API } from 'aws-amplify';
 import awsconfig from '../aws-exports';
 
@@ -15,26 +13,27 @@ const dataService = (function () {
 
   async function getStudent(user, classroom) {
     return await API.get("studentsapi",
-        `/Students/Student/${user.id}?classroom=${classroom}&name=${user.name}`
+        `/api/Students/Student/${user.id}?classroom=${classroom}&name=${user.name}`
         );
   }
 
   async function getAllData(classroom) {
-    return await communicationService.get(
-      config.realUrl + "/tabs/" + classroom
+    return await API.get("studentsapi",
+      `/api/tabs/${classroom}`
     );
   }
 
   async function getClassesOptions() {
-    return await communicationService.get(
-      config.realUrl + "/tabs/כיתות?_format=list"
-    );
+    return await API.get("studentsapi","/api/tabs/כיתות?_format=list");
   }
 
   async function writeNewExcel(classroom, data) {
-    return await communicationService.post(
-      data,
-      config.backendUrl + "/class/" + classroom
+    return await API.post(
+      "studentsapi",
+      `/api/class/${classroom}`,
+      {
+        body: {data}
+      }
     );
   }
 })();
