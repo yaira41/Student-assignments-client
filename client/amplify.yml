@@ -19,5 +19,8 @@ applications:
       phases:
         build:
           commands:
+            - "# Execute Amplify CLI with the helper script"
+            - npm uninstall @aws-amplify/cli
+            - npm install -g colors@1.4.1 @aws-amplify/cli@6.4.0
             - amplifyPush --simple
     appRoot: client
