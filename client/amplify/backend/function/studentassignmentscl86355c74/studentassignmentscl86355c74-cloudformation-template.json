@@ -15,12 +15,6 @@
     },
     "s3Key": {
       "Type": "String"
-    },
-    "accessKeyAws": {
-      "Type": "String"
-    },
-    "secretKeyAws": {
-      "Type": "String"
     }
   },
   "Conditions": {
@@ -75,12 +69,6 @@
             },
             "REGION": {
               "Ref": "AWS::Region"
-            },
-            "ACCESS_KEY_AWS": {
-              "Ref": "accessKeyAws"
-            },
-            "SECRET_KEY_AWS": {
-              "Ref": "secretKeyAws"
             }
           }
         },

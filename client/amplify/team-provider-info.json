@@ -38,9 +38,7 @@
       "function": {
         "studentassignmentscl86355c74": {
           "deploymentBucketName": "amplify-studentassignments-check-110700-deployment",
-          "s3Key": "amplify-builds/studentassignmentscl86355c74-2b65794969467143652f-build.zip",
-          "accessKeyAws": "$ACCESS_KEY_AWS",
-          "secretKeyAws": "$SECRET_KEY_AWS"
+          "s3Key": "amplify-builds/studentassignmentscl86355c74-2b65794969467143652f-build.zip"
         }
       },
       "api": {
