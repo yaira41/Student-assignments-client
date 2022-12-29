@@ -1,5 +1,9 @@
 import config from "./config";
 import communicationService from "./communicatorService";
+import { Amplify, API } from 'aws-amplify';
+import awsconfig from '../aws-exports';
+
+Amplify.configure(awsconfig);
 
 const dataService = (function () {
   return {
@@ -10,34 +14,9 @@ const dataService = (function () {
   };
 
   async function getStudent(user, classroom) {
-    return await communicationService.get(
-      config.backendUrl +
-        "/Students/Student/" +
-        user.id +
-        "?classroom=" +
-        classroom +
-        "&name=" +
-        user.name
-    );
-
-    let studentDetails = await getAllData(classroom);
-
-    let usdd;
-    // data.every((element) => {
-    //   if (
-    //     element["שם פרטי"] === user["name"] &&
-    //     element["ת.ז."] === user["id"]
-    //   ) {
-    //     usdd = element;
-    //     return false;
-    //   }
-
-    //   return true;
-    // });
-    // data.array.forEach((element) => {
-    //   if (element[0] === userName && element[1] === id) return element;
-    // });
-    return usdd;
+    return await API.get("studentsapi",
+        `/Students/Student/${user.id}?classroom=${classroom}&name=${user.name}`
+        );
   }
 
   async function getAllData(classroom) {
@@ -58,13 +37,6 @@ const dataService = (function () {
       config.backendUrl + "/class/" + classroom
     );
   }
-
-  // function orderData(data) {
-  //   data.every((element) => {
-  //     if (element["מספר תלמידה"] === "") {
-  //     }
-  //   });
-  // }
 })();
 
 export default dataService;
