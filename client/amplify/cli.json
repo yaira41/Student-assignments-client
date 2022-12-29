@@ -13,10 +13,6 @@
     },
     "project": {
       "overrides": true
-    },
-    "graphqltransformer": {
-      "securityEnhancementNotification": false,
-      "showFieldAuthNotification": false
     }
   },
   "debug": {
