@@ -23,6 +23,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "deploy": "amplify push",
+    "pull": "amplify pull",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -44,5 +46,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@aws-amplify/cli": "^10.5.2"
   }
 }
