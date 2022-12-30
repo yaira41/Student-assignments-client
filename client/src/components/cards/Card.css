@@ -1,0 +1,39 @@
+.card-container{
+  direction: rtl;
+  width: 20rem;
+  height: 16.5rem;
+  margin: 1rem 4rem 1rem 0;
+  overflow: hidden;
+  border-radius: 30px;
+  box-shadow: 0px 0px 15px -5px;
+  transition: 0.3s;
+  animation: ease-in;
+}
+
+.card-title{
+    cursor: pointer;
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.card-content{
+    padding: 0.5rem 2rem 1rem 0;
+}
+
+p{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-bottom: 0.25rem;
+    display: flex;
+    width: 85%;
+    padding-right: 3px;
+}
+
+h4 {
+    margin-right: 3px;
+}
+
+.aaaa{
+    background-color: #f3f3f3;
+}
