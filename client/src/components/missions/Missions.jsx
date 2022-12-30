@@ -48,65 +48,74 @@ const getUniqueSubjects = (missions) => {
 
 const roundNumber = (grade) => {
     return isNaN(grade) ? grade : Math.round(grade);
-} 
+}
+
+const percentageCalculator = (grade, percentage) => {
+
+}
 
 function Missions({missions}) {
     const e = orderSubjects(missions);
     return (
-        <div className="asd">
-            {Object.entries(e["grades"]).map((subject, index) => {
-                const content = {};
-                for (let i = 0; i < subject[1].length; i++) {
-                    if(e.subTitles[subject[0]][i]){
-                        content[e.subTitles[subject[0]][i]] = Array.isArray(subject[1]) ? roundNumber(subject[1][i]) : roundNumber(subject[1]);
-                    } else{
-                        content[subject[0]] =  Array.isArray(subject[1]) ? roundNumber(subject[1][i]) : roundNumber(subject[1]);
-                    }
-                }
+        <div>
+            <div className='logo'>
                 
-                return(
-                <Card
-                title={subject[0]}
-                content={content}
-                />
-                )
-            })}
-
-
-
-            {/* {Object.keys(missions[missions.length - 1]).map((mission,index) => {
-                const subjectContent = [];
-                const formattedName = getSubjectName(mission);
-                for (let i = 0; i < missions.length; i++) {
-                    const content = missions[i][mission] || '';
-                    subjectContent.push(content);
-                }
-                return(
-                    <>
-                        {formattedName === mission ? 
-                        <p className='title'>{formattedName} - </p> : 
-                        <></>
+            </div>
+            <div className="asd">
+                {Object.entries(e["grades"]).map((subject, index) => {
+                    const content = {};
+                    for (let i = 0; i < subject[1].length; i++) {
+                        if(e.subTitles[subject[0]][i]){
+                            content[e.subTitles[subject[0]][i]] = Array.isArray(subject[1]) ? roundNumber(subject[1][i]) : roundNumber(subject[1]);
+                        } else{
+                            content[subject[0]] =  Array.isArray(subject[1]) ? roundNumber(subject[1][i]) : roundNumber(subject[1]);
                         }
-                        <Mission
-                            key={index}
-                            content={subjectContent}
-                        />
-                    </>
-                )
-                // return(
-                //     <>
-                //         {formattedName === mission ? 
-                //         <p className='title'>{formattedName} - </p> : 
-                //         <></>
-                //         }
-                //         <Mission
-                //             key={index}
-                //             content={subjectContent}
-                //         />
-                //     </>
-                // )
-            }
-            )} */}
+                    }
+                    
+                    return(
+                    <Card
+                    title={subject[0]}
+                    content={content}
+                    />
+                    )
+                })}
+
+
+
+                {/* {Object.keys(missions[missions.length - 1]).map((mission,index) => {
+                    const subjectContent = [];
+                    const formattedName = getSubjectName(mission);
+                    for (let i = 0; i < missions.length; i++) {
+                        const content = missions[i][mission] || '';
+                        subjectContent.push(content);
+                    }
+                    return(
+                        <>
+                            {formattedName === mission ? 
+                            <p className='title'>{formattedName} - </p> : 
+                            <></>
+                            }
+                            <Mission
+                                key={index}
+                                content={subjectContent}
+                            />
+                        </>
+                    )
+                    // return(
+                    //     <>
+                    //         {formattedName === mission ? 
+                    //         <p className='title'>{formattedName} - </p> : 
+                    //         <></>
+                    //         }
+                    //         <Mission
+                    //             key={index}
+                    //             content={subjectContent}
+                    //         />
+                    //     </>
+                    // )
+                }
+                )} */}
+            </div>
         </div>
     )
 }
