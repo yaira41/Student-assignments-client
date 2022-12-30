@@ -17,7 +17,10 @@ export default function Card ({title, content}) {
             </div>
             {/* <div className={isActive ? "show" : "" + "card-content"}> */}
             <div className="card-content">
-                {Object.keys(content).map((a, index) => <p className={index%2 === 0 ? "aaaa": ""}>{a}: <h4>{content[a]}</h4></p>)}
+                {Object.keys(content).map((a, index) => 
+                <p className={index%2 === 0 ? "": "aaaa"}>
+                    {`${a}`} <h4>{content[a]}
+                    </h4></p>)}
             </div>
         </div>
     )

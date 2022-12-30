@@ -1,7 +1,7 @@
 .card-container{
   direction: rtl;
   width: 20rem;
-  height: 18rem;
+  height: 16.5rem;
   margin: 1rem 4rem 1rem 0;
   overflow: hidden;
   border-radius: 30px;
@@ -12,20 +12,28 @@
 
 .card-title{
     cursor: pointer;
-    margin-top: 0.5rem;
+    margin-top: 1.5rem;
     text-align: center;
 }
 
 .card-content{
-    padding-right: 3rem;
-    padding-bottom: 1rem;
+    padding: 0.5rem 2rem 1rem 0;
 }
 
 p{
-    margin-top: 1rem;
     display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-bottom: 0.25rem;
+    display: flex;
+    width: 85%;
+    padding-right: 3px;
+}
+
+h4 {
+    margin-right: 3px;
 }
 
 .aaaa{
-    opacity: 0.35;
+    background-color: #f3f3f3;
 }
