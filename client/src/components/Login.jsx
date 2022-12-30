@@ -4,6 +4,7 @@ import {useNavigate } from 'react-router-dom';
 import { schema } from "../utils/schema";
 import SelectClass from './selectClass/SelectClass';
 import dataService from "../utils/dataService";
+import './login.css';
 
 function Login(){
   const navigate = useNavigate();
@@ -44,8 +45,6 @@ function Login(){
       onSubmit,
     });
 
-    const [data,setData] = useState([]);
-
   return (
     <form onSubmit={handleSubmit} autoComplete="off">
       <label htmlFor="name">שם מלא</label>
@@ -76,7 +75,7 @@ function Login(){
       setClassroom={setClassroom}
     />
 
-      <button disabled={errors.id || errors.name || classroom === ''} type="submit">
+      <button disabled={ errors.id || values.id === '' || errors.name || values.name === '' || classroom === ''} type="submit">
         אשר
       </button>
     </form>

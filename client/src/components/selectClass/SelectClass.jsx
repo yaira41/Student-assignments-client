@@ -13,7 +13,7 @@ export default function SelectSmall({classroom, setClassroom}) {
 
   return (
     <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-      <InputLabel id="demo-select-small">כיתה</InputLabel>
+      <InputLabel style={{ padding:0, margin:0 }} id="demo-select-small">כיתה</InputLabel>
       <Select
         labelId="demo-select-small"
         id="demo-select-small"
@@ -24,12 +24,6 @@ export default function SelectSmall({classroom, setClassroom}) {
         {innerClasses.map((classroom, index) =>
            <MenuItem key={index} value={classroom}>{classroom}</MenuItem>
         )}
-        {/* <MenuItem value="">
-          <em>None</em>
-        </MenuItem>
-        <MenuItem value={10}>Ten</MenuItem>
-        <MenuItem value={20}>Twenty</MenuItem>
-        <MenuItem value={30}>Thirty</MenuItem> */}
       </Select>
     </FormControl>
   );
