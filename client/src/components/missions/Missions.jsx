@@ -70,7 +70,7 @@ const getSpecialSubject = (missions) => {
 function Missions({missions}) {
     const e = orderSubjects(missions);
     return (
-        <div>
+        <div className='details-container'>
             <div className='logo'>
 
             </div>

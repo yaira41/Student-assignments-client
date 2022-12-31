@@ -1,5 +1,7 @@
-.title {    
-    direction: rtl;
+.details-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .logo {
