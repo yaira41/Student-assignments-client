@@ -5,7 +5,7 @@
 }
 
 .logo {
-    background-image: url('../../../public/symbol.jfif');
+    background-image: url('/public/symbol.jfif');
     margin: auto;
     height: 12rem;
     width: 17.4rem;
