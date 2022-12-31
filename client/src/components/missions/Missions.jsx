@@ -1,6 +1,6 @@
 import React from 'react';
-import Mission from './Mission';
-import Card from '../cards/Card'; 
+import { SPECIAL_SUBJECTS } from '../../utils/utils';
+import Card from '../cards/Card';
 import './missions.css'
 
 const getSubjectName = (subject) => {
@@ -14,8 +14,20 @@ const orderSubjects = (missions) => {
     const newData = {};
     const subTitles = {};
     const grades = {};
-    const uniqueNames = getUniqueSubjects(Object.keys(missions[missions.length - 1]));
+    const personalData = {};
     
+    SPECIAL_SUBJECTS.forEach(subject => {
+        if (missions[missions.length - 1][subject]) {
+            personalData[subject] = missions[missions.length - 1][subject]
+
+            missions.forEach(row => {
+                delete row[subject];
+            });
+        }
+    });
+
+    const uniqueNames = getUniqueSubjects(Object.keys(missions[missions.length - 1]));
+
     uniqueNames.forEach(element => {
         subTitles[`${element}`] = [];
         fillData(subTitles, element, missions[0]);
@@ -43,14 +55,15 @@ const getUniqueSubjects = (missions) => {
             uniqueNames.push(subName);
         }
     });
-    return uniqueNames
+
+    return uniqueNames;
 }
 
 const roundNumber = (grade) => {
     return isNaN(grade) ? grade : Math.round(grade);
 }
 
-const percentageCalculator = (grade, percentage) => {
+const getSpecialSubject = (missions) => {
 
 }
 
@@ -59,7 +72,7 @@ function Missions({missions}) {
     return (
         <div>
             <div className='logo'>
-                
+
             </div>
             <div className="asd">
                 {Object.entries(e["grades"]).map((subject, index) => {
