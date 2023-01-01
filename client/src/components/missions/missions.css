@@ -1,3 +1,21 @@
-.title {    
+.details-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.logo {
+    background-image: url('/public/symbol.jfif');
+    margin: auto;
+    height: 12rem;
+    width: 17.4rem;
+    border-radius: 8rem;
+}
+
+.asd{
     direction: rtl;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2rem;
 }
