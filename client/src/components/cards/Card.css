@@ -1,7 +1,7 @@
 .card-container{
   direction: rtl;
   width: 20rem;
-  min-height: 16.5rem;;
+  min-height: 16.5rem;
   margin: 1rem 2rem 1rem 2rem;
   overflow: hidden;
   border-radius: 30px;
@@ -17,7 +17,9 @@
 }
 
 .card-content{
+    max-height: 15rem;
     padding: 0.5rem 2rem 1rem 0;
+    overflow: auto;
 }
 
 p{
@@ -36,4 +38,26 @@ h4 {
 
 .aaaa{
     background-color: #f3f3f3;
+}
+
+
+::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #ffffff;
+    border-radius: 15px;
+
+}
+
+::-webkit-scrollbar
+{
+    border-radius: 15px;
+	width: 6px;
+	background-color: #eae4e4;
+}
+
+::-webkit-scrollbar-thumb
+{
+    border-radius: 15px;
+	background-color: rgb(199, 201, 200);
 }

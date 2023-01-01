@@ -45,7 +45,6 @@ function Login(){
         className={errors.name && touched.name ? "input-error" : ""}
       /> */}
       {errors.name && touched.name && <p className="error"> {errors.name} </p>}
-      <label htmlFor="id">תעודת זהות</label>
       <input
         value={values.id}
         onChange={handleChange}
@@ -63,7 +62,7 @@ function Login(){
     />
 
       <button disabled={ errors.id || values.id === '' || classroom === ''} type="submit">
-        אשר
+        התחברי
       </button>
     </form>
   );
