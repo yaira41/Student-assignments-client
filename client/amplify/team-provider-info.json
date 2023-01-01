@@ -1,0 +1,47 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-amplifye09b927d851d4-staging-184528-authRole",
+      "UnauthRoleArn": "arn:aws:iam::473405714515:role/amplify-amplifye09b927d851d4-staging-184528-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::473405714515:role/amplify-amplifye09b927d851d4-staging-184528-authRole",
+      "Region": "eu-west-1",
+      "DeploymentBucketName": "amplify-amplifye09b927d851d4-staging-184528-deployment",
+      "UnauthRoleName": "amplify-amplifye09b927d851d4-staging-184528-unauthRole",
+      "StackName": "amplify-amplifye09b927d851d4-staging-184528",
+      "StackId": "arn:aws:cloudformation:eu-west-1:473405714515:stack/amplify-amplifye09b927d851d4-staging-184528/22f92630-83bb-11ed-b510-022a5ed814c1",
+      "AmplifyAppId": "d31grazh94e26k"
+    },
+    "categories": {
+      "function": {
+        "studentassignmentscl86355c74": {
+          "deploymentBucketName": "amplify-amplifye09b927d851d4-staging-184528-deployment",
+          "s3Key": "amplify-builds/studentassignmentscl86355c74-2b65794969467143652f-build.zip"
+        }
+      }
+    }
+  },
+  "check": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-studentassignments-check-110700-authRole",
+      "UnauthRoleArn": "arn:aws:iam::473405714515:role/amplify-studentassignments-check-110700-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::473405714515:role/amplify-studentassignments-check-110700-authRole",
+      "Region": "eu-west-1",
+      "DeploymentBucketName": "amplify-studentassignments-check-110700-deployment",
+      "UnauthRoleName": "amplify-studentassignments-check-110700-unauthRole",
+      "StackName": "amplify-studentassignments-check-110700",
+      "StackId": "arn:aws:cloudformation:eu-west-1:473405714515:stack/amplify-studentassignments-check-110700/eb63acc0-8768-11ed-b231-062950f1521b",
+      "AmplifyAppId": "d31grazh94e26k"
+    },
+    "categories": {
+      "function": {
+        "studentassignmentscl86355c74": {
+          "deploymentBucketName": "amplify-studentassignments-check-110700-deployment",
+          "s3Key": "amplify-builds/studentassignmentscl86355c74-2b65794969467143652f-build.zip"
+        }
+      },
+      "api": {
+        "studentsapi": {}
+      }
+    }
+  }
+}

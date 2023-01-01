@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {useNavigate } from 'react-router-dom';
 import { schema } from "../utils/schema";
 import SelectClass from './selectClass/SelectClass';
@@ -8,19 +8,7 @@ import './login.css';
 
 function Login(){
   const navigate = useNavigate();
-  // const [classes, setClasses] = useState([]);
   const [classroom, setClassroom] = useState('');
-
-  // useEffect(() => {
-  //   async function fetchMyAPI() {
-  //     let response = await dataService.getClassesOptions();
-  //     console.log(response);
-  //     // response = await response.json();
-  //     setClasses(response['כיתה'])
-  //   }
-
-  //   fetchMyAPI();
-  // },[])
 
   async function onSubmit(values) {
     if (values.name === 'manager' && values.id === '000000000'){
