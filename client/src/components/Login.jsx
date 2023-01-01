@@ -9,17 +9,23 @@ import './login.css';
 function Login(){
   const navigate = useNavigate();
   const [classroom, setClassroom] = useState('');
+  const [unvalidStdent, setUnvalidStudent] = useState('');
 
   async function onSubmit(values) {
+    const loader = document.querySelector('#loading');
+    loader.classList.add('display');
     if (values.name === 'manager' && values.id === '000000000'){
       navigate('/managerRoom', {});
     }
-    let user = await dataService.getStudent(values, classroom);
-    if(user){
-      navigate('/a2', {state: user});
-    }
-    else{
-      console.log('unvaild user');
+    try {
+      let user = await dataService.getStudent(values, classroom);
+      if(user){
+        loader.classList.remove('display');
+        navigate('/a2', {state: user});
+      }
+    } catch (error) {
+      loader.classList.remove('display');
+      setUnvalidStudent('שגיאה בנתונים, אנא נסו שנית')      
     }
   };
 
@@ -61,9 +67,13 @@ function Login(){
       setClassroom={setClassroom}
     />
 
+    <div className="button-container">
       <button disabled={ errors.id || values.id === '' || classroom === ''} type="submit">
         התחברי
       </button>
+      <div id="loading"></div>
+    </div>
+      {unvalidStdent && <h5> {unvalidStdent} </h5>}
     </form>
   );
 };

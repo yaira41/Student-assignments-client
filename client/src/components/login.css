@@ -15,15 +15,6 @@
     margin-top: 1rem;
   }
   
-  /* nav h3 {
-    margin: 7rem 34rem 1rem 1rem;
-    cursor: pointer;
-    color: #718096;
-  }
-  nav h3:hover {
-    color: white;
-  } */
-  
   form {
     direction: rtl;
     width: 80%;
@@ -69,6 +60,10 @@
   input.input-error{
     border-color: #fc8181;
   }
+
+  .button-container{
+    display: flex;
+  }
   
   button {
     display: block;
@@ -88,4 +83,28 @@
   button:disabled {
     opacity: 0.35;
     pointer-events: none;
+  }
+
+  #loading {
+    width: 2rem;
+    height: 2rem;
+    border: 5px solid #f3f3f3;
+    border-top: 6px solid gray;
+    border-radius: 100%;
+    margin: auto;
+    visibility: hidden;
+    animation: spin 1s infinite linear;
+  }
+
+  #loading.display {
+    visibility: visible;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
