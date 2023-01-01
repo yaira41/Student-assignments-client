@@ -27,7 +27,6 @@ function Login(){
     useFormik({
       initialValues: {
         name: "",
-        id: "",
       },
       validationSchema: schema,
       onSubmit,
@@ -35,7 +34,7 @@ function Login(){
 
   return (
     <form onSubmit={handleSubmit} autoComplete="off">
-      <label htmlFor="name">שם מלא</label>
+      {/* <label htmlFor="name">שם מלא</label>
       <input
         value={values.name}
         onChange={handleChange}
@@ -44,7 +43,7 @@ function Login(){
         placeholder="שם מלא"
         onBlur={handleBlur}
         className={errors.name && touched.name ? "input-error" : ""}
-      />
+      /> */}
       {errors.name && touched.name && <p className="error"> {errors.name} </p>}
       <label htmlFor="id">תעודת זהות</label>
       <input
@@ -63,7 +62,7 @@ function Login(){
       setClassroom={setClassroom}
     />
 
-      <button disabled={ errors.id || values.id === '' || errors.name || values.name === '' || classroom === ''} type="submit">
+      <button disabled={ errors.id || values.id === '' || classroom === ''} type="submit">
         אשר
       </button>
     </form>

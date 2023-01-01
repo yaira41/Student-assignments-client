@@ -1,9 +1,9 @@
-const express = require('express')
+const express = require("express");
 const cors = require("cors");
-const bodyParser = require('body-parser')
+const bodyParser = require("body-parser");
 const utils = require("./utils/utils.js");
 
-const app = express()
+const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -50,14 +50,11 @@ app
 app.route("/api/Students/Student/:id").get(async (req, res) => {
   const student = {
     id: req.params.id,
-    name: req.query.name,
     classroom: req.query.classroom,
   };
 
   const data = await utils.readData(student.classroom);
-  const studentDetails = data.find(
-    (e) => e["ת.ז."] == student.id && e["שם פרטי"] === student.name
-  );
+  const studentDetails = data.find((e) => e["ת.ז."] == student.id);
 
   if (!studentDetails) {
     res.status(404).send("אין תלמידה כזו");
@@ -77,13 +74,11 @@ app.route("/api/Subjects/:id").get((req, res) => {
   student ? res.send(student) : res.status(404).send(errorNotFound);
 });
 
-
-
-app.listen(3000, function() {
-    console.log("App started")
+app.listen(3030, function () {
+  console.log("App started");
 });
 
 // Export the app object. When executing the application local this does nothing. However,
 // to port it to AWS Lambda we will create a wrapper around that will load the app from
 // this file
-module.exports = app
+module.exports = app;
