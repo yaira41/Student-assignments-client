@@ -1,0 +1,11 @@
+.personal-container{
+    direction: rtl;
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.data-container{
+    display: flex;
+    padding-left: 1rem;
+}

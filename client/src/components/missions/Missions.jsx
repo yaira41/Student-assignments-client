@@ -1,5 +1,6 @@
 import React from 'react';
 import { SPECIAL_SUBJECTS } from '../../utils/utils';
+import PersonalData from '../personalArea/PersonalArea';
 import Card from '../cards/Card';
 import './missions.css'
 
@@ -16,24 +17,29 @@ const orderSubjects = (missions) => {
     const grades = {};
     const personalData = {};
     
-    SPECIAL_SUBJECTS.forEach(subject => {
-        if (missions[missions.length - 1][subject]) {
-            personalData[subject] = missions[missions.length - 1][subject]
+    // SPECIAL_SUBJECTS.forEach(subject => {
+    //     if (asd[asd.length - 1][subject]) {
+    //         personalData[`${subject}`] = asd[asd.length - 1][subject]
 
-            missions.forEach(row => {
-                delete row[subject];
-            });
-        }
-    });
+    //         asd.forEach(row => {
+    //             delete row[subject];
+    //         });
+    //     }
+    // });
 
     const uniqueNames = getUniqueSubjects(Object.keys(missions[missions.length - 1]));
 
     uniqueNames.forEach(element => {
-        subTitles[`${element}`] = [];
-        fillData(subTitles, element, missions[0]);
-        grades[`${element}`] = [];
-        fillData(grades, element, missions[missions.length - 1]);
+        if(SPECIAL_SUBJECTS.includes(element)){
+            personalData[`${element}`] = missions[missions.length - 1][element]
+        } else{
+            subTitles[`${element}`] = [];
+            fillData(subTitles, element, missions[0]);
+            grades[`${element}`] = [];
+            fillData(grades, element, missions[missions.length - 1]);
+        }
     });
+    newData['personalData'] = personalData;
     newData['subTitles'] = subTitles;
     newData['grades'] = grades;
     return newData;
@@ -74,6 +80,9 @@ function Missions({missions}) {
             <div className='logo'>
 
             </div>
+            <PersonalData
+                content={e['personalData']}
+            />
             <div className="asd">
                 {Object.entries(e["grades"]).map((subject, index) => {
                     const content = {};
@@ -87,47 +96,12 @@ function Missions({missions}) {
                     
                     return(
                     <Card
+                    key={index}
                     title={subject[0]}
                     content={content}
                     />
                     )
                 })}
-
-
-
-                {/* {Object.keys(missions[missions.length - 1]).map((mission,index) => {
-                    const subjectContent = [];
-                    const formattedName = getSubjectName(mission);
-                    for (let i = 0; i < missions.length; i++) {
-                        const content = missions[i][mission] || '';
-                        subjectContent.push(content);
-                    }
-                    return(
-                        <>
-                            {formattedName === mission ? 
-                            <p className='title'>{formattedName} - </p> : 
-                            <></>
-                            }
-                            <Mission
-                                key={index}
-                                content={subjectContent}
-                            />
-                        </>
-                    )
-                    // return(
-                    //     <>
-                    //         {formattedName === mission ? 
-                    //         <p className='title'>{formattedName} - </p> : 
-                    //         <></>
-                    //         }
-                    //         <Mission
-                    //             key={index}
-                    //             content={subjectContent}
-                    //         />
-                    //     </>
-                    // )
-                }
-                )} */}
             </div>
         </div>
     )

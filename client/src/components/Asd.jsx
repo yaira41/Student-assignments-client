@@ -7,7 +7,7 @@ let location = useLocation();
   
 const [user] = useState(location.state);
 return (
-  <div>
+  <div style={{background: "white"}}>
     <Missions
       missions={user}
     />
