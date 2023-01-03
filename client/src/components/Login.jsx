@@ -13,8 +13,9 @@ function Login(){
 
   async function onSubmit(values) {
     const loader = document.querySelector('#loading');
+    const button = document.querySelector('button');
     loader.classList.add('display');
-    if (values.name === 'manager' && values.id === '000000000'){
+    button.classList.add('hide');
       navigate('/managerRoom', {});
     }
     try {
@@ -25,6 +26,7 @@ function Login(){
       }
     } catch (error) {
       loader.classList.remove('display');
+      button.classList.remove('hide');
       setUnvalidStudent('שגיאה בנתונים, אנא נסו שנית')      
     }
   };
@@ -62,17 +64,19 @@ function Login(){
       />
       {errors.id && touched.id && <p className="error"> {errors.id} </p>}
 
-    <SelectClass
-      classroom={classroom}
-      setClassroom={setClassroom}
-    />
+      <div className="end">
+        <SelectClass
+          classroom={classroom}
+          setClassroom={setClassroom}
+          />
 
-    <div className="button-container">
-      <button disabled={ errors.id || values.id === '' || classroom === ''} type="submit">
-        התחברי
-      </button>
-      <div id="loading"></div>
-    </div>
+          <div className="button-container">
+            <div id="loading"></div>
+            <button disabled={ errors.id || values.id === '' || classroom === ''} type="submit">
+              התחברי
+            </button>
+          </div>
+      </div>
       {unvalidStdent && <h5> {unvalidStdent} </h5>}
     </form>
   );

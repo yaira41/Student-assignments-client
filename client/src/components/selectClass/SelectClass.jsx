@@ -12,7 +12,7 @@ export default function SelectSmall({classroom, setClassroom}) {
   };
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+    <FormControl sx={{ m: 0, width: 100}} size="small">
       <InputLabel style={{ padding:0, margin:0 }} id="demo-select-small">כיתה</InputLabel>
       <Select
         labelId="demo-select-small"

@@ -5,9 +5,10 @@ function App() {
   return (
     <div className="App">
       <div className="login-container">
-        <nav>
-          <h3>התחברות</h3>
-        </nav>
+        <div className="login-title">
+          <h1>התחברות</h1>
+          <h3>ברוכה הבאה!</h3>
+        </div>
         <Login />
       </div>
     </div>
