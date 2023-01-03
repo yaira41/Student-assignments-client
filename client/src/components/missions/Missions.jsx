@@ -5,9 +5,6 @@ import Card from '../cards/Card';
 import './missions.css'
 
 const getSubjectName = (subject) => {
-    // if(subject.includes('מס יח')){
-    //     return 'מספר יחידות';
-    // }
     return subject.split('_')[0];
 }
 
@@ -17,16 +14,6 @@ const orderSubjects = (missions) => {
     const grades = {};
     const personalData = {};
     
-    // SPECIAL_SUBJECTS.forEach(subject => {
-    //     if (asd[asd.length - 1][subject]) {
-    //         personalData[`${subject}`] = asd[asd.length - 1][subject]
-
-    //         asd.forEach(row => {
-    //             delete row[subject];
-    //         });
-    //     }
-    // });
-
     const uniqueNames = getUniqueSubjects(Object.keys(missions[missions.length - 1]));
 
     uniqueNames.forEach(element => {
@@ -69,16 +56,13 @@ const roundNumber = (grade) => {
     return isNaN(grade) ? grade : Math.round(grade);
 }
 
-const getSpecialSubject = (missions) => {
-
-}
-
 function Missions({missions}) {
     const e = orderSubjects(missions);
     return (
         <div className='details-container'>
-            <div className='logo'>
-
+            <div className='logo-container'>
+                <div className='logo'></div>
+                <div className='grades-title'><h2>גליון ציונים אישי</h2></div>
             </div>
             <PersonalData
                 content={e['personalData']}

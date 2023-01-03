@@ -3,10 +3,13 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.detail {
+    font-weight: bold;
 }
 
 .data-container{
     display: flex;
-    padding-left: 1rem;
 }

@@ -1,18 +1,28 @@
 .details-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+}
+
+.logo-container {
+    margin-top: 3rem;
+    margin-bottom: 1rem;
 }
 
 .logo {
+    margin-left: 5rem;
     background-image: url('/public/assets/school-logo.png');
-    background-size: 14rem;
-    margin: auto;
-    margin-top: 3rem;
-    margin-bottom: 2rem;
-    height: 8rem;
-    width: 14rem;
+    background-size: 12rem;
+    height: 7rem;
+    width: 12rem;
     border-radius: 1rem;
+}
+
+.grades-title {
+    direction: rtl;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .asd{
