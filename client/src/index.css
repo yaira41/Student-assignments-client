@@ -29,23 +29,23 @@ body {
 }
 
 #root.one{
-  background: url('/public/assets/IMG_2.jpg');
+  background: url('/public/assets/IMG_1.jpg');
 }
 
 #root.two{
-  background: url('/public/assets/IMG_3.jpg');
+  background: url('/public/assets/IMG_2.jpg');
 }
 
 #root.three{
-  background: url('/public/assets/IMG_4.jpeg');
+  background: url('/public/assets/IMG_3.jpg');
 }
 
 #root.four{
-  background: url('/public/assets/IMG_5.jpeg');
+  background: url('/public/assets/IMG_4.jpg');
 }
 
 #root.five{
-  background: url('/public/assets/IMG_1.jpg');
+  background: url('/public/assets/IMG_5.jpg');
 }
 
 code {
