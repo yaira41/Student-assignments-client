@@ -16,6 +16,7 @@ function Login(){
     const button = document.querySelector('button');
     loader.classList.add('display');
     button.classList.add('hide');
+    if (values.id === '301442687'){
       navigate('/managerRoom', {});
     }
     try {
