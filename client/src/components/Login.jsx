@@ -42,16 +42,6 @@ function Login(){
 
   return (
     <form onSubmit={handleSubmit} autoComplete="off">
-      {/* <label htmlFor="name">שם מלא</label>
-      <input
-        value={values.name}
-        onChange={handleChange}
-        id="name"
-        type="name"
-        placeholder="שם מלא"
-        onBlur={handleBlur}
-        className={errors.name && touched.name ? "input-error" : ""}
-      /> */}
       {errors.name && touched.name && <p className="error"> {errors.name} </p>}
       <input
         value={values.id}
