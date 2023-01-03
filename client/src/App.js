@@ -6,8 +6,8 @@ function App() {
     <div className="App">
       <div className="login-container">
         <div className="login-title">
-          <h1>התחברות</h1>
-          <h3>ברוכה הבאה!</h3>
+          <h2>התחברות</h2>
+          <h4>ברוכה הבאה!</h4>
         </div>
         <Login />
       </div>

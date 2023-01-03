@@ -37,7 +37,7 @@
     outline: none;
     border: none;
     padding: 3.5rem 0.5rem 0.65rem 0.5rem;
-    font-size: 1.5rem;
+    font-size: 1rem;
     border-bottom: 1px solid #333;
   }
   
@@ -73,7 +73,7 @@
   
   button {
     visibility: visible;
-    width: 6.5rem;
+    width: 6.3rem;
     margin: 2rem 0;
     margin-right: 0.5rem;
     padding: 0.35rem 0.5rem;
