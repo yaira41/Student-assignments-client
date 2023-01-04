@@ -62,7 +62,7 @@ function Missions({missions}) {
         <div className='details-container'>
             <div className='logo-container'>
                 <div className='logo'></div>
-                <div className='grades-title'><h2>גליון ציונים אישי</h2></div>
+                <div className='grades-title'><h1>גליון ציונים אישי</h1></div>
             </div>
             <PersonalData
                 content={e['personalData']}

@@ -7,7 +7,7 @@ export default function PersonalData ({content}) {
         <div className="personal-container">
             {Object.keys(content).map((a, index) =>
                 <div className="data-container">
-                    <div className="detail">{a} :</div> 
+                    <div className="detail">{a}: </div> 
                     {content[a]} {Object.keys(content).length - 1 === index  ? "" : <Seperator/>}
                 </div>
                 )}
