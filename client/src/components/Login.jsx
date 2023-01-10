@@ -35,7 +35,7 @@ function Login(){
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
       initialValues: {
-        name: "",
+        id: "",
       },
       validationSchema: schema,
       onSubmit,
@@ -46,7 +46,14 @@ function Login(){
       {errors.name && touched.name && <p className="error"> {errors.name} </p>}
       <input
         value={values.id}
-        onChange={handleChange}
+        onChange={(e) => {
+          if (isNaN(e.target.value)) {
+            e.target.value = e.target.value.slice(0, -1);
+            console.log('NAN');
+          }
+          e.target.value = e.target.value.trim();
+          handleChange(e);
+        }}
         id="id"
         type="id"
         placeholder="תעודת זהות"
