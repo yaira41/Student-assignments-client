@@ -18,33 +18,28 @@ app.route("/").get((req, res) => {
   res.end();
 });
 
-app.route("/api/Classes").get((req, res) => {
-  res.send(PostList.getAllPost());
+app.route("/api/Class/:id").post(async (req, res) => {
+  if (req.params.id) {
+    let data = req.body.data;
+    await utils.writeNewData(data, req.params.id);
+    res.status(200).send();
+  } else {
+    res.status(400).send("error");
+  }
 });
 
 app
-  .route("/api/Class/:id")
-  .get((req, res) => {
-    const post = PostList.getPost(req);
-    post ? res.send(post) : res.status(404).send(errorNotFound);
-  })
-  .delete((req, res) => {
-    let postDeleted = PostList.deletePost(req);
-
-    postDeleted
-      ? res.status(200).send("post has been deleted!")
+  .route("/api/Classes/classesNumbers")
+  .get(async (req, res) => {
+    const classesNumbers = await utils.readData();
+    classesNumbers
+      ? res.send(classesNumbers)
       : res.status(404).send(errorNotFound);
   })
   .post(async (req, res) => {
-    if (req.params.id) {
-      let data = req.body.data;
-      await utils.writeNewData(req.params.id, data);
-      res.status(200).send();
-    } else {
-      let post = PostList.updatePost(req);
-
-      post ? res.status(200).send(post) : res.status(404).send(errorNotFound);
-    }
+    let data = req.body;
+    await utils.writeNewData(data);
+    res.status(200).send();
   });
 
 app.route("/api/Students/Student/:id").get(async (req, res) => {
@@ -67,11 +62,6 @@ app.route("/api/Students/Student/:id").get(async (req, res) => {
   relevantSubjects.push(studentDetails);
 
   res.send(relevantSubjects);
-});
-
-app.route("/api/Subjects/:id").get((req, res) => {
-  const student = PostList.getPost(req);
-  student ? res.send(student) : res.status(404).send(errorNotFound);
 });
 
 app.listen(3030, function () {

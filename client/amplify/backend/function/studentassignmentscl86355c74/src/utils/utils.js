@@ -1,9 +1,10 @@
-const AWS = require('aws-sdk');
+const AWS = require("aws-sdk");
 AWS.config.update({
-  region: 'eu-west-1',
-  apiVersion: "latest"
-})
+  region: "eu-west-1",
+  apiVersion: "latest",
+});
 const s3 = new AWS.S3();
+const CLASSES_NUMBERS_PATH = "כיתות";
 
 const utils = (function () {
   return {
@@ -12,19 +13,22 @@ const utils = (function () {
     getRelevantSubjects,
   };
 
-  async function writeNewData(path, data) {
+  async function writeNewData(data, path = CLASSES_NUMBERS_PATH) {
     const classBucketParams = {
-      Bucket: 'student-assignment-class-bucket', 
-      Key: `${path}.json`, 
-      Body: JSON.stringify(data)
-    }
+      Bucket: "student-assignment-class-bucket",
+      Key: `${path}.json`,
+      Body: JSON.stringify(data),
+    };
     await s3.putObject(classBucketParams).promise();
   }
 
-  async function readData(path) {
-    const classBucketParams = {Bucket: 'student-assignment-class-bucket', Key: `${path}.json`}
-    const response = await s3.getObject(classBucketParams).promise()
-    const fileContent = response.Body.toString('utf-8');
+  async function readData(path = CLASSES_NUMBERS_PATH) {
+    const classBucketParams = {
+      Bucket: "student-assignment-class-bucket",
+      Key: `${path}.json`,
+    };
+    const response = await s3.getObject(classBucketParams).promise();
+    const fileContent = response.Body.toString("utf-8");
     let fileContentObject = JSON.parse(fileContent);
     console.log(fileContentObject);
 
