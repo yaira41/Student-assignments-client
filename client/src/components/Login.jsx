@@ -1,15 +1,41 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import { useFormik } from "formik";
-import { useState } from "react";
-import {useNavigate } from 'react-router-dom';
 import { schema } from "../utils/schema";
 import SelectClass from './selectClass/SelectClass';
 import dataService from "../utils/dataService";
+import { classes } from "../utils/utils";
 import './login.css';
 
 function Login(){
   const navigate = useNavigate();
   const [classroom, setClassroom] = useState('');
   const [unvalidStdent, setUnvalidStudent] = useState('');
+  const [amountOfClasses, setAmountOfClasses] = useState([]);
+  const [amountOfAllClasses, setAmountOfAllClasses] = useState({});
+  const [classNumber, setClassNumber] = useState('');
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await dataService.getClassesNumbers();
+      setAmountOfAllClasses(response);
+    }
+    try {
+      fetchData();
+    } catch (error) {
+      console.log(error);
+    }
+  },[]);
+
+  useEffect(() => {
+    if(classroom){
+      const a = [];
+      for (let index = 1; index <= amountOfAllClasses[classroom]; index++) {
+        a.push(index);
+      }
+      setAmountOfClasses(a);
+    }
+  },[classroom])
 
   async function onSubmit(values) {
     const loader = document.querySelector('#loading');
@@ -20,7 +46,8 @@ function Login(){
       navigate('/managerRoom', {});
     }
     try {
-      let user = await dataService.getStudent(values, classroom);
+      const fullClass = classroom + classNumber;
+      const user = await dataService.getStudent(values, fullClass);
       if(user){
         loader.classList.remove('display');
         navigate('/a2', {state: user});
@@ -62,18 +89,28 @@ function Login(){
       />
       {errors.id && touched.id && <p className="error"> {errors.id} </p>}
 
-      <div className="end">
-        <SelectClass
-          classroom={classroom}
-          setClassroom={setClassroom}
-          />
-
-          <div className="button-container">
-            <div id="loading"></div>
-            <button disabled={ errors.id || values.id === '' || classroom === ''} type="submit">
-              התחברי
-            </button>
+        <div style={{display: 'flex', flexDirection: 'column'}}>
+          <SelectClass
+            label={"כיתה"}
+            currentValue={classroom}
+            values={classes}
+            setValue={setClassroom}
+            />
+          <SelectClass
+            label={"מספר כיתה"}
+            currentValue={classNumber}
+            values={amountOfClasses}
+            setValue={setClassNumber}
+            />
           </div>
+
+      <div className="end">
+        <div className="button-container">
+          <div id="loading"></div>
+          <button disabled={ errors.id || values.id === '' || classroom === ''} type="submit">
+            התחברי
+          </button>
+        </div>
       </div>
       {unvalidStdent && <h5> {unvalidStdent} </h5>}
     </form>
