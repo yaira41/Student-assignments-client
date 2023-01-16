@@ -1,26 +1,39 @@
 import React from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import './Card.css';
 
-
 export default function Card ({title, content}) {
-    const [isActive, setIsActive] = useState(false);
+    const [isFinished, setIsFinished] = useState(false);
 
-    const click = () => {
-        setIsActive(!isActive);
-    }
+    useEffect(()=> {
+        Object.keys(content).forEach(element => {
+            if(typeof(element) === 'string' && element.includes('ציון סופי')){
+                setIsFinished(true);
+                return;
+            }
+        })
+    },[])
 
     return(
         <div className="card-container">
-            <div className="card-title" onClick={click}>
-                <h3>{title}</h3>
+            <div className={isFinished ? "card-title finish" : "card-title"}>
+                <h3>{isFinished ? `${title} ✔️` : title}</h3>
             </div>
-            {/* <div className={isActive ? "show" : "" + "card-content"}> */}
             <div className="card-content">
-                {Object.keys(content).map((a, index) => 
+                {Object.keys(content).map((subject, index) => {
+                if(subject.includes("ציון סופי")){
+                    return (
+                        <div className="final-score"> 
+                            <div className="final-score-subject">{subject}</div>
+                            <div className="final-score-grade">{content[subject]}</div>
+                        </div>
+                    )
+                }
+                return (
                 <p className={index%2 === 0 ? "": "aaaa"}>
-                    {`${a}`} <h4>{content[a]}
-                    </h4></p>)}
+                    {`${subject}`} <h4>{content[subject]}
+                    </h4></p>)})}
             </div>
         </div>
     )

@@ -62,12 +62,7 @@
 
   .end{
     display: flex;
-    flex-direction: column;
     align-items: flex-end;
-  }
-
-  SelectClass{
-    margin-top: 2rem;
   }
   
   .button-container {
