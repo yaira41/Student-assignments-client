@@ -8,7 +8,9 @@ const dataService = (function () {
     getAllData,
     getClassesOptions,
     getStudent,
+    getClassesNumbers,
     writeNewExcel,
+    updateClassesNumbers,
   };
 
   async function getStudent(user, classroom) {
@@ -26,8 +28,19 @@ const dataService = (function () {
     return await API.get("studentsapi", "/api/tabs/כיתות?_format=list");
   }
 
+  async function getClassesNumbers() {
+    return await API.get("studentsapi", "/api/Classes/classesNumbers");
+  }
+
   async function writeNewExcel(classroom, data) {
-    return await API.post("studentsapi", `/api/class/${classroom}`, {
+    const trimedClassroom = classroom.replaceAll(" ", "");
+    return await API.post("studentsapi", `/api/class/${trimedClassroom}`, {
+      body: { data },
+    });
+  }
+
+  async function updateClassesNumbers(data) {
+    return await API.post("studentsapi", "/api/Classes/classesNumbers", {
       body: { data },
     });
   }
