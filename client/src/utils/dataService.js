@@ -41,7 +41,7 @@ const dataService = (function () {
 
   async function updateClassesNumbers(data) {
     return await API.post("studentsapi", "/api/Classes/classesNumbers", {
-      body: { data },
+      body: data,
     });
   }
 })();
