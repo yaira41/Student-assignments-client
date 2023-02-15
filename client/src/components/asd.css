@@ -1,0 +1,10 @@
+.back-pic {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    background: url('../../public/assets/cards-background.jpg');
+    background-size: cover;
+}
