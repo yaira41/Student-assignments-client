@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { useLocation } from 'react-router-dom';
 import Missions from './missions/Missions';
+import Credits from './credits/Credits';
 import './asd.css';
 
 const Asd = () => {
@@ -12,6 +13,9 @@ return (
     <Missions
       missions={user}
     />
+    <div className='credits-container'>
+      <Credits/>
+    </div>
   </div>
 );
 }

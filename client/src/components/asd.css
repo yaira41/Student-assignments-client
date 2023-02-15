@@ -8,3 +8,7 @@
     background: url('../../public/assets/cards-background.jpg');
     background-size: cover;
 }
+
+.credits-container{
+    text-align: center;
+}
