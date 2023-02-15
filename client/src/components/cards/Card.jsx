@@ -35,8 +35,8 @@ export default function Card ({title, content}) {
                 }
                 return (
                 <p className={index%2 === 0 ? "": "aaaa"}>
-                    {`${subject}`} <h4>{content[subject]}
-                    </h4></p>)})}
+                    {`${subject}`} <h4 className={content[subject] === 'חסר' ? 'missing': ''}> {content[subject]}</h4>
+                </p>)})}
             </div>
         </div>
     )
