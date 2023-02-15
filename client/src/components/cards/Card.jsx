@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+import {FcCheckmark} from 'react-icons/fc';
 import './Card.css';
 
 export default function Card ({title, content}) {
@@ -17,8 +18,10 @@ export default function Card ({title, content}) {
 
     return(
         <div className="card-container">
-            <div className={isFinished ? "card-title finish" : "card-title"}>
-                <h3>{isFinished ? `${title} ✔️` : title}</h3>
+            <div className="card-title">
+                <h3>{title}</h3>
+                {isFinished ? <FcCheckmark className="finish" size={25}/> : <></>}
+
             </div>
             <div className="card-content">
                 {Object.keys(content).map((subject, index) => {
