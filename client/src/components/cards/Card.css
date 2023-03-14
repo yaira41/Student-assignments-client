@@ -54,11 +54,9 @@ h4 {
     width: auto;
     padding-right: 0.2rem;
     padding-left: 0.2rem;
-    color: white;
-    background-color: #00800069;
+    color: rgb(43, 132, 43);
     height: 1.5rem;
     font-weight: 700;
-    border-radius: 5px;
 }
 
 .final-score-grade{
