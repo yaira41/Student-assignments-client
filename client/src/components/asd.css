@@ -5,9 +5,17 @@
     right: 0;
     width: 100%;
     height: auto;
-    background: url('../../public/assets/cards-background.jpg');
+    background: url('../../public/assets/cards-background1.jpg');
     background-size: cover;
 }
+
+@media only screen and (max-width: 600px) {
+    [class*="back-pic"] {
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+}
+
 
 .credits-container{
     text-align: center;
