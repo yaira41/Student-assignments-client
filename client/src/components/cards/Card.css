@@ -20,7 +20,7 @@
 }
 
 .card-content{
-    max-height: 15rem;
+    max-height: 15.04rem;
     padding: 0.5rem 2rem 1rem 0;
     overflow: auto;
 }
@@ -39,7 +39,7 @@ h4 {
     margin-right: 3px;
 }
 
-.aaaa{
+.gray-background {
     background-color: #f3f3f3;
 }
 
