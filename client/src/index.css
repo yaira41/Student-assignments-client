@@ -14,15 +14,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-#root{
-  position: absolute;
+#app{
+  display: flex;
+  justify-content: center;
   top: 0;
   left: 0;
   right: 0;
   width: 100%;
   height: 100vh;
   background: url('/public/assets/IMG_1.jpg');
-  background-size: cover;
   -webkit-transition: all 1s ease-in;
     -moz-transition: all 1s ease-in;
     -o-transition: all 1s ease-in;
@@ -30,29 +30,24 @@ body {
     transition: all 1s ease-in;
 }
 
-#root.one{
+#app.one{
   background: url('/public/assets/IMG_1.jpg');
-  background-size: cover;
 }
 
-#root.two{
+#app.two{
   background: url('/public/assets/IMG_2.jpg');
-  background-size: cover;
 }
 
-#root.three{
+#app.three{
   background: url('/public/assets/IMG_3.jpg');
-  background-size: cover;
 }
 
-#root.four{
+#app.four{
   background: url('/public/assets/IMG_4.jpg');
-  background-size: cover;
 }
 
-#root.five{
+#app.five{
   background: url('/public/assets/IMG_5.jpg');
-  background-size: cover;
 }
 
 code {
