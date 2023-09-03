@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { SPECIAL_SUBJECTS } from '../../utils/utils';
 import PersonalData from '../personalArea/PersonalArea';
 import Card from '../cards/Card';
@@ -57,7 +57,17 @@ const roundNumber = (grade) => {
 }
 
 function Missions({missions}) {
-    const e = orderSubjects(missions);
+    const {personalData,grades, subTitles  } = useMemo(() => orderSubjects(missions), [missions])
+
+    const fillContent = (subject, content) => {
+        for (let i = 0; i < subject[1].length; i++) {
+            if (subTitles[subject[0]][i]) {
+                content[subTitles[subject[0]][i]] = Array.isArray(subject[1]) ? roundNumber(subject[1][i]) : roundNumber(subject[1]);
+            } else {
+                content[subject[0]] = Array.isArray(subject[1]) ? roundNumber(subject[1][i]) : roundNumber(subject[1]);
+            }
+        }
+    }
     return (
         <div className='details-container'>
             <div className='logo-container'>
@@ -65,24 +75,18 @@ function Missions({missions}) {
                 <div className='grades-title'><h1>גליון ציונים אישי</h1></div>
             </div>
             <PersonalData
-                content={e['personalData']}
+                personalDetails={personalData}
             />
-            <div className="asd">
-                {Object.entries(e["grades"]).map((subject, index) => {
+            <div className="cards-container">
+                {Object.entries(grades).map((subject, index) => {
                     const content = {};
-                    for (let i = 0; i < subject[1].length; i++) {
-                        if(e.subTitles[subject[0]][i]){
-                            content[e.subTitles[subject[0]][i]] = Array.isArray(subject[1]) ? roundNumber(subject[1][i]) : roundNumber(subject[1]);
-                        } else{
-                            content[subject[0]] =  Array.isArray(subject[1]) ? roundNumber(subject[1][i]) : roundNumber(subject[1]);
-                        }
-                    }
+                    fillContent(subject, content);
                     
                     return(
                     <Card
-                    key={index}
-                    title={subject[0]}
-                    content={content}
+                        key={index}
+                        title={subject[0]}
+                        content={content}
                     />
                     )
                 })}
@@ -91,4 +95,4 @@ function Missions({missions}) {
     )
 }
 
-export default Missions;
+export default React.memo(Missions);
