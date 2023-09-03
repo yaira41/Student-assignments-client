@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import { schema } from "../utils/schema";
 import SelectClass from './selectClass/SelectClass';
 import dataService from "../utils/dataService";
-import { classes } from "../utils/utils";
+import { classes, specialId } from "../utils/utils";
 import './login.css';
 
 function Login(){
@@ -42,7 +42,7 @@ function Login(){
     const button = document.querySelector('button');
     loader.classList.add('display');
     button.classList.add('hide');
-    if (values.id === '301442687'){
+    if (values.id === specialId){
       navigate('/managerRoom', {});
     }
     try {
