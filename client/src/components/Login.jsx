@@ -50,7 +50,7 @@ function Login(){
       const user = await dataService.getStudent(values, fullClass);
       if(user){
         loader.classList.remove('display');
-        navigate('/a2', {state: user});
+        navigate('/gradesOverView', {state: user});
       }
     } catch (error) {
       loader.classList.remove('display');

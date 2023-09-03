@@ -2,17 +2,18 @@ import React, {useState} from 'react';
 import { useLocation } from 'react-router-dom';
 import Missions from './missions/Missions';
 import Credits from './credits/Credits';
-import './asd.css';
+import './gradesOverview.css';
 
-const Asd = () => {
+const GradesOverview = () => {
 let location = useLocation();
   
 const [user] = useState(location.state);
 return (
   <div className='back-pic'>
-    <Missions
+    {user ? <Missions
       missions={user}
-    />
+    />:
+    <p>אין פרטים כעת, אנא פנה לאחראי</p>}
     <div className='credits-container'>
       <Credits/>
     </div>
@@ -20,4 +21,4 @@ return (
 );
 }
 
-export default Asd;
+export default GradesOverview;
