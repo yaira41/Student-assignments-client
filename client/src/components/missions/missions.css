@@ -25,7 +25,7 @@
     justify-content: center;
 }
 
-.asd{
+.cards-container {
     direction: rtl;
     display: flex;
     flex-wrap: wrap;

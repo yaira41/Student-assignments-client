@@ -5,7 +5,7 @@
     right: 0;
     width: 100%;
     height: auto;
-    background: url('../../public/assets/cards-background1.jpg');
+    background: url('../../public/assets/cards-background.jpg');
     background-size: cover;
 }
 
@@ -16,6 +16,6 @@
     }
 } */
 
-.credits-container{
+.credits-container {
     text-align: center;
 }
