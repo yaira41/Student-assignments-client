@@ -5,8 +5,8 @@ function Mission({content}){
 
     return (
         <div className="mission-block">
-            {content.map((raw) => {
-               return( <div className="mission-content">
+            {content.map((raw, index) => {
+               return( <div key={index} className="mission-content">
                 {raw ? raw : "-" }
             </div>)
             })}
