@@ -2,7 +2,7 @@ import React from 'react';
 import { SPECIAL_SUBJECTS } from '../../utils/utils';
 import PersonalData from '../personalArea/PersonalArea';
 import Card from '../cards/Card';
-import './missions.css'
+import './missions.css';
 
 const getSubjectName = (subject) => {
     return subject.split('_')[0];

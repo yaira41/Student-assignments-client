@@ -10,14 +10,6 @@ function Mission({content}){
                 {raw ? raw : "-" }
             </div>)
             })}
-            
-            
-            {/* <div className="mission-content">
-                {mission}
-            </div>
-            <div className="mission-content">
-                {content ? content : "-" }
-            </div> */}
         </div>
     )
 }
