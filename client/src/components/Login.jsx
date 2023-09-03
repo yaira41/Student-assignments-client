@@ -29,15 +29,16 @@ function Login(){
 
   useEffect(() => {
     if(classroom){
-      const a = [];
+      const classNumbers = [];
       for (let index = 1; index <= amountOfAllClasses[classroom]; index++) {
-        a.push(index);
+        classNumbers.push(index);
       }
-      setAmountOfClasses(a);
+      setAmountOfClasses(classNumbers);
     }
   },[classroom])
 
   async function onSubmit(values) {
+    setUnvalidStudent('');
     const loader = document.querySelector('#loading');
     const button = document.querySelector('button');
     loader.classList.add('display');
