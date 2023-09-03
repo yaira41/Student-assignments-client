@@ -2,13 +2,13 @@ import React from "react";
 import Seperator from "../seperator/Seperator";
 import './personalArea.css';
 
-export default function PersonalData ({content}) {
+export default function PersonalData ({personalDetails}) {
     return(
         <div className="personal-container">
-            {Object.keys(content).map((a, index) =>
-                <div className="data-container">
-                    <div className="detail">{a}: </div> 
-                    {content[a]} {Object.keys(content).length - 1 === index  ? "" : <Seperator/>}
+            {Object.keys(personalDetails).map((detail, index) =>
+                <div key={index} className="data-container">
+                    <div className="detail">{detail}: </div> 
+                    {personalDetails[detail]} {Object.keys(personalDetails).length - 1 === index  ? "" : <Seperator/>}
                 </div>
                 )}
         </div>
