@@ -1,21 +1,18 @@
+import { useState } from 'react';
 import * as xlsx from 'xlsx';
 import dataService from '../../utils/dataService';
+import { classes } from '../../utils/utils';
 import './managerRoom.css';
 
-const CLASSES = ['י','יא','יב']
-
 export default function ManagerRoom() {
+    const [excelFile, setExcelFile] = useState();
 
     const onUpdateClassesNumbersSubmit = () => {
         const data = {}
-        CLASSES.forEach(classRoom => {
+        classes.forEach(classRoom => {
             data[classRoom] = document.querySelector(`#${classRoom}`)?.value !== '' ? 
             document.querySelector(`#${classRoom}`)?.value : 0;
         });
-
-        const a = JSON.stringify(data);
-        console.log(a);
-
         dataService.updateClassesNumbers(data);
     }
 
@@ -30,22 +27,30 @@ export default function ManagerRoom() {
         const file = e.target.files[0];
         if (file){
             const data = await file.arrayBuffer(file);
-            const excelFile = xlsx.read(data);
-            console.log(excelFile);
-            excelFile.SheetNames.forEach((spreadSheet) => {
-                const excelSheet = excelFile.Sheets[spreadSheet];
-                const data = xlsx.utils.sheet_to_json(excelSheet);
-                console.log(data);
-                dataService.writeNewExcel(spreadSheet, data);
-            })
+            const convertedExcelFile = xlsx.read(data);
+            setExcelFile(convertedExcelFile);
+        }
+    }
+
+    const sendNewExcel = async () => {
+        for (const spreadSheet of excelFile.SheetNames) {
+            const excelSheet = excelFile.Sheets[spreadSheet];
+            const data = xlsx.utils.sheet_to_json(excelSheet);
+            await dataService.writeNewExcel(spreadSheet, data);
         }
     }
 
     return(
         <div className='manager-room-page'>
-            <input type='file' onChange={(e) => readExcel(e)} ></input>
+            <div>
+                <input type='file' onChange={(e) => readExcel(e)}
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, 
+                application/vnd.ms-excel"
+                />
+                <button type="submit" onClick={sendNewExcel}>עדכן אקסל</button>
+            </div>
             <div className='classes-numbers-container'>
-                {CLASSES.map((classRoom, index) => {
+                {classes.map((classRoom, index) => {
                     return( <div key={index}>
                     <div>{classRoom}</div> <input type='text' placeholder='מספר כיתות' 
                     id={classRoom} onChange={onChangeInput}/>    
