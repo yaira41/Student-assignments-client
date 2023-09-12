@@ -1,7 +1,6 @@
 {
-  "name": "student-assignments",
+  "name": "@student-assignments/frontend",
   "version": "0.1.0",
-  "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
@@ -23,7 +22,7 @@
   },
   "scripts": {
     "start": "sst bind react-scripts start",
-    "build": "react-scripts build",
+    "build": "sst bind react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
