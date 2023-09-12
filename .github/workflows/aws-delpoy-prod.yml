@@ -29,6 +29,11 @@ concurrency: merge-${{ github.ref }}
           with:
               role-to-assume: ${{ secrets.ROLE_ARN }}
               aws-region: eu-west-1
+
+        - name: installing dependencies
+          run: |
+            npm ci
+            
         - name: Deploy app
           id: deploy
           run: |
