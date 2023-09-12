@@ -1,0 +1,16 @@
+.personal-container{
+    direction: rtl;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.detail {
+    font-weight: bold;
+    padding-left: 0.3rem;
+}
+
+.data-container{
+    display: flex;
+}

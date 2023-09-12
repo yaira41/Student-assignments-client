@@ -1,0 +1,16 @@
+.mission-block {
+  display: flex;
+  direction: rtl;
+  width: 500px;
+  margin: 1rem 1rem 1rem 0;
+  overflow: hidden;
+  box-shadow: 0px 0px 15px -5px;
+  transition: 0.3s;
+  animation: ease-in;
+}
+
+.mission-content {
+  direction: rtl;
+  padding: 2rem;
+  size: 10px;
+}
