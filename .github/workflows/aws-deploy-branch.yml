@@ -1,0 +1,50 @@
+---
+name: Deploy Branch Stack
+
+on:
+    pull_request:
+        branches:
+            - master
+        types:
+            - opened
+            - reopened
+            - synchronize
+    workflow_dispatch:
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        permissions:
+            pull-requests: write
+            actions: write
+            contents: read
+            id-token: write
+        environment:
+            name: development (PR)
+            url: ${{ steps.deploy.outputs.SiteUrl }}
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 16
+            - name: configure credentials
+              uses: aws-actions/configure-aws-credentials@v2
+              with:
+                  role-to-assume: ${{ secrets.ROLE_ARN }}
+                  aws-region: eu-west-1
+
+            - name: fomatting stage name
+              id: format-stage-name
+              uses: frabert/replace-string-action@v2
+              with:
+                  pattern: "[^A-Za-z0-9-]"
+                  flags: "g"
+                  string: ${{ github.head_ref || github.ref_name }}
+                  replace-with: "-"
+
+            - name: installing dependencies
+              run: |
+                  npm ci
+
+            - name: deploy
+              id: deploy
+              run: npm run deploy -- --stage ${{ steps.format-stage-name.outputs.replaced }}

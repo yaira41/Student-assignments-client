@@ -1,0 +1,35 @@
+name: Deploy prod to AWS
+on:
+  push: 
+    branches:
+      - master
+
+# concurrency group name ensures concurrent workflow runs wait for any in-progress job to finish
+concurrency: merge-${{ github.ref }}
+
+# permission can be added at job level or workflow level    
+ permissions:
+   id-token: write   # This is required for requesting the JWT
+   contents: read    # This is required for actions/checkout
+
+ jobs:
+   DeployApp:
+     runs-on: ubuntu-latest
+     steps:
+      environment:
+        name: production
+        url: ${{ steps.deploy.outputs.SiteUrl }}
+    steps:
+        - uses: actions/checkout@v3
+        - uses: actions/setup-node@v3
+          with:
+              node-version: 16
+        - name: configure credentials
+          uses: aws-actions/configure-aws-credentials@v2
+          with:
+              role-to-assume: ${{ secrets.ROLE_ARN }}
+              aws-region: eu-west-1
+        - name: Deploy app
+          id: deploy
+          run: |
+            npm run deploy -- --stage prod
