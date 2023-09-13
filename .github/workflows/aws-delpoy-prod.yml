@@ -8,33 +8,35 @@ on:
 concurrency: merge-${{ github.ref }}
 
 # permission can be added at job level or workflow level    
- permissions:
+permissions:
    id-token: write   # This is required for requesting the JWT
    contents: read    # This is required for actions/checkout
 
- jobs:
-   DeployApp:
-     runs-on: ubuntu-latest
-     steps:
-      environment:
-        name: production
-        url: ${{ steps.deploy.outputs.SiteUrl }}
+jobs:
+  DeployApp:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.SITE_URL }}
     steps:
-        - uses: actions/checkout@v3
-        - uses: actions/setup-node@v3
-          with:
-              node-version: 16
-        - name: configure credentials
-          uses: aws-actions/configure-aws-credentials@v2
-          with:
-              role-to-assume: ${{ secrets.ROLE_ARN }}
-              aws-region: eu-west-1
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+          node-version: 16
+    - name: configure credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        role-to-assume: ${{ secrets.ROLE_ARN }}
+        aws-region: eu-west-1
 
-        - name: installing dependencies
-          run: |
-            npm ci
+    - name: installing dependencies
+      run: |
+        npm ci
             
-        - name: Deploy app
-          id: deploy
-          run: |
-            npm run deploy -- --stage prod
+    - name: Deploy app
+      id: deploy
+      run: |
+        deploy_output=$(npm run deploy -- --stage prod)
+        site_url=$(echo "$deploy_output" | grep "SiteUrl:" | awk '{print $2}')
+        echo "site_url is now set to: $site_url"
+        echo SITE_URL=$site_url >> $GITHUB_OUTPUT
