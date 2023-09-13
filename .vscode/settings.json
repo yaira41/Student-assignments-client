@@ -1,11 +1,5 @@
 {
-  "files.exclude": {
-    "client/amplify/.config": true,
-    "client/amplify/**/*-parameters.json": true,
-    "client/amplify/**/amplify.state": true,
-    "client/amplify/**/transform.conf.json": true,
-    "client/amplify/#current-cloud-backend": true,
-    "client/amplify/backend/amplify-meta.json": true,
-    "client/amplify/backend/awscloudformation": true
+  "search.exclude": {
+    "**/.sst": true
   }
 }

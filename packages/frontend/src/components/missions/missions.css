@@ -1,0 +1,34 @@
+.details-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.logo-container {
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+}
+
+.logo {
+    margin-left: 5rem;
+    background-image: url('/public/assets/icons/system-logo.png');
+    background-size: 12rem;
+    height: 7rem;
+    width: 12rem;
+    border-radius: 1rem;
+}
+
+.grades-title {
+    direction: rtl;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cards-container {
+    direction: rtl;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2rem;
+}
