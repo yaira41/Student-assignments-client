@@ -20,7 +20,7 @@ jobs:
             id-token: write
         environment:
             name: development (PR)
-            url: ${{ steps.deploy.outputs.SiteUrl }}
+            url: ${{ steps.deploy.outputs.SITE_URL }}
         steps:
             - uses: actions/checkout@v3
             - uses: actions/setup-node@v3
