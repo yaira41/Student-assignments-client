@@ -47,4 +47,8 @@ jobs:
 
             - name: deploy
               id: deploy
-              run: npm run deploy -- --stage ${{ steps.format-stage-name.outputs.replaced }}
+              run: |
+                deploy_output=$(npm run deploy -- --stage ${{ steps.format-stage-name.outputs.replaced }})
+                site_url=$(echo "$deploy_output" | grep "SiteUrl:" | awk '{print $2}')
+                echo "site_url is now set to: $site_url"
+                echo SITE_URL=$site_url >> $GITHUB_OUTPUT
