@@ -16,6 +16,5 @@ export default {
       .stack(Storage)
       .stack(API)
       .stack(Frontend)
-      .stack(IAM);
   }
 } satisfies SSTConfig;
