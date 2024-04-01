@@ -7,7 +7,6 @@ export const get = ApiHandler(async (_evt) => {
     classroom: _evt.queryStringParameters?.classroom,
   };
 
-  console.log(student)
   const data = await utils.readData(student.classroom);
   const studentDetails = data.find((e: any) => e["ת.ז."] == student.id);
 
@@ -23,7 +22,6 @@ export const get = ApiHandler(async (_evt) => {
 
   const relevantSubjects = utils.getRelevantSubjects(studentKeys, data);
   relevantSubjects.push(studentDetails);
-  console.log(relevantSubjects)
 
   return {
     statusCode: 200,
