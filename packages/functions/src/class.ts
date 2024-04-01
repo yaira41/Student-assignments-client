@@ -3,8 +3,8 @@ import utils from "@student-assignments/core/utils";
 
 export const create = ApiHandler(async (_evt) => {
   if (_evt.pathParameters?.id) {
-    let { data } = JSON.parse(_evt?.body || "");
-    await utils.writeNewData(data, _evt.pathParameters?.id);
+    let data = JSON.parse(_evt?.body || "");
+    await utils.writeNewData(data, _evt.pathParameters.id);
     return {
       statusCode: 200
     }

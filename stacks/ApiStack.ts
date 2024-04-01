@@ -17,7 +17,7 @@ export function API({ stack }: StackContext) {
       "GET /api/Students/Student/{id}": "packages/functions/src/student.get",
       "GET /api/Classes/classesNumbers": "packages/functions/src/class.list",
       "POST /api/Classes/classesNumbers": "packages/functions/src/class.createClasses",
-      "POST /api/Class/{id}": "packages/functions/src/class.create"
+      "POST /api/class/{id}": "packages/functions/src/class.create"
     },
   });
 

@@ -27,8 +27,6 @@ const utils = (function () {
     const response = await s3.getObject(classBucketParams).promise();
     const fileContent = response.Body.toString("utf-8");
     let fileContentObject = JSON.parse(fileContent);
-    console.log(fileContentObject);
-
     return fileContentObject;
   }
 

@@ -10,9 +10,6 @@ export function Frontend({ stack }: StackContext) {
     buildOutput: "build",
     environment: {
       REACT_APP_API_URL: api.url,
-    },
-    dev: {
-      deploy: true,
     }
   });
 
