@@ -9,15 +9,21 @@ export function API({ stack }: StackContext) {
         environment: {
           BUCKET_NAME: bucket.bucketName,
         },
-        bind: [bucket]
+        bind: [bucket],
       },
     },
     routes: {
       "GET /": "packages/functions/src/lambda.handler",
       "GET /api/Students/Student/{id}": "packages/functions/src/student.get",
       "GET /api/Classes/classesNumbers": "packages/functions/src/class.list",
-      "POST /api/Classes/classesNumbers": "packages/functions/src/class.createClasses",
-      "POST /api/class/{id}": "packages/functions/src/class.create"
+      "GET /api/Classes/Class/{id}": "packages/functions/src/class.get",
+      "GET /api/Teachers/TeachersAuthZ":
+        "packages/functions/src/teachersAuthZ.get",
+      "POST /api/Classes/classesNumbers":
+        "packages/functions/src/class.createClasses",
+      "POST /api/class/{id}": "packages/functions/src/class.create",
+      "POST /api/Teachers/TeachersAuthZ":
+        "packages/functions/src/teachersAuthZ.create",
     },
   });
 

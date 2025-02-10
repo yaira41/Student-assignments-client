@@ -1,64 +1,80 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { schema } from "../utils/schema";
-import SelectClass from './selectClass/SelectClass';
+import SelectClass from "./selectClass/SelectClass";
 import dataService from "../utils/dataService";
 import { classes, specialId } from "../utils/utils";
-import './login.css';
+import "./login.css";
 
-function Login() {
+function Login({ userType }) {
   const navigate = useNavigate();
-  const [classroom, setClassroom] = useState('');
-  const [unvalidStdent, setUnvalidStudent] = useState('');
-  const [amountOfClasses, setAmountOfClasses] = useState([]);
+  const [classroom, setClassroom] = useState("");
+  const [unvalidStdent, setUnvalidStudent] = useState("");
   const [amountOfAllClasses, setAmountOfAllClasses] = useState({});
-  const [classNumber, setClassNumber] = useState('');
+  const [classNumber, setClassNumber] = useState("");
 
   useEffect(() => {
     async function fetchData() {
-      const response = await (await dataService.getClassesNumbers()).json();
-      setAmountOfAllClasses(response);
+      try {
+        const amountOfClassData = await (
+          await dataService.getClassesNumbers()
+        ).json();
+        // const teachersPermissionsData = await (await dataService.getTeachersAuthZ()).json();
+        // setPermissions(data || []);
+        setAmountOfAllClasses(amountOfClassData);
+      } catch (error) {
+        console.log(error);
+      }
     }
-    try {
-      fetchData();
-    } catch (error) {
-      console.log(error);
-    }
+    fetchData();
   }, []);
 
-  useEffect(() => {
-    if (classroom) {
-      const classNumbers = [];
-      for (let index = 1; index <= amountOfAllClasses[classroom]; index++) {
-        classNumbers.push(index);
-      }
-      setAmountOfClasses(classNumbers);
-    }
-  }, [amountOfAllClasses, classroom])
+  const amountOfClasses = useMemo(() => {
+    if (!classroom || !amountOfAllClasses[classroom]) return [];
+    return Array.from(
+      { length: amountOfAllClasses[classroom] },
+      (_, i) => i + 1
+    );
+  }, [classroom, amountOfAllClasses]);
 
   async function onSubmit(values) {
-    setUnvalidStudent('');
-    const loader = document.querySelector('#loading');
-    const button = document.querySelector('button');
-    loader.classList.add('display');
-    button.classList.add('hide');
+    setUnvalidStudent("");
+    const loader = document.querySelector("#loading");
+    const button = document.querySelector("button");
+    loader.classList.add("display");
+    button.classList.add("hide");
     if (values.id === specialId) {
-      navigate('/managerRoom', {});
+      navigate("/managerRoom", {});
     }
     try {
       const fullClass = classroom + classNumber;
-      const user = await dataService.getStudent(values, fullClass);
-      if (user) {
-        loader.classList.remove('display');
-        navigate('/gradesOverView', { state: user });
+      if (userType === "מורה") {
+        const teacherAllowedClasses = await (
+          await dataService.getTeachersAuthZ(values.id)
+        ).json();
+
+        if (
+          teacherAllowedClasses &&
+          teacherAllowedClasses.includes(fullClass)
+        ) {
+          navigate("/teacherView", { state: fullClass });
+        } else {
+          setUnvalidStudent("שגיאה בנתונים, אנא נסו שנית");
+        }
+      } else {
+        const user = await dataService.getStudent(values, fullClass);
+        if (user) {
+          navigate("/gradesOverView", { state: user });
+        }
       }
     } catch (error) {
-      loader.classList.remove('display');
-      button.classList.remove('hide');
-      setUnvalidStudent('שגיאה בנתונים, אנא נסו שנית')
+      button.classList.remove("hide");
+      setUnvalidStudent("שגיאה בנתונים, אנא נסו שנית");
+    } finally {
+      loader.classList.remove("display");
     }
-  };
+  }
 
   const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
     useFormik({
@@ -77,20 +93,22 @@ function Login() {
         onChange={(e) => {
           if (isNaN(e.target.value)) {
             e.target.value = e.target.value.slice(0, -1);
-            console.log('NAN');
+            console.log("NAN");
           }
           e.target.value = e.target.value.trim();
           handleChange(e);
         }}
         id="id"
         type="id"
+        maxLength="9"
         placeholder="תעודת זהות"
         onBlur={handleBlur}
         className={errors.id && touched.id ? "input-error" : ""}
       />
+
       {errors.id && touched.id && <p className="error"> {errors.id} </p>}
 
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: "flex", flexDirection: "column" }}>
         <SelectClass
           label={"כיתה"}
           currentValue={classroom}
@@ -108,7 +126,16 @@ function Login() {
       <div className="end">
         <div className="button-container">
           <div id="loading"></div>
-          <button disabled={errors.id || values.id === '' || classroom === ''} type="submit">
+          <button
+            className="login-button"
+            disabled={
+              errors.id ||
+              values.id === "" ||
+              classroom === "" ||
+              classNumber === ""
+            }
+            type="submit"
+          >
             התחברי
           </button>
         </div>
@@ -116,5 +143,5 @@ function Login() {
       {unvalidStdent && <h5> {unvalidStdent} </h5>}
     </form>
   );
-};
+}
 export default Login;
