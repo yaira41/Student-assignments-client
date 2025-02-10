@@ -4,8 +4,11 @@ const dataService = (function () {
     getClassesOptions,
     getStudent,
     getClassesNumbers,
+    getClassroom,
+    getTeachersAuthZ,
     writeNewExcel,
     updateClassesNumbers,
+    updateTeachersAuthZ,
   };
 
   async function getStudent(user, classroom) {
@@ -22,6 +25,12 @@ const dataService = (function () {
     );
   }
 
+  async function getClassroom(classroomId) {
+    return await fetch(
+      `${process.env.REACT_APP_API_URL}/api/Classes/Class/${classroomId}`
+    );
+  }
+
   async function getClassesOptions() {
     return await fetch(
       `${process.env.REACT_APP_API_URL}/api/tabs/כיתות?_format=list`
@@ -32,6 +41,18 @@ const dataService = (function () {
     return await fetch(
       `${process.env.REACT_APP_API_URL}/api/Classes/classesNumbers`
     );
+  }
+
+  async function getTeachersAuthZ(teacherId) {
+    const url = new URL(
+      `${process.env.REACT_APP_API_URL}/api/Teachers/TeachersAuthZ`
+    );
+
+    if (teacherId) {
+      url.searchParams.append("teacherId", teacherId);
+    }
+
+    return await fetch(url);
   }
 
   async function writeNewExcel(classroom, data) {
@@ -48,6 +69,16 @@ const dataService = (function () {
   async function updateClassesNumbers(data) {
     return await fetch(
       `${process.env.REACT_APP_API_URL}/api/Classes/classesNumbers`,
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+      }
+    );
+  }
+
+  async function updateTeachersAuthZ(data) {
+    return await fetch(
+      `${process.env.REACT_APP_API_URL}/api/Teachers/TeachersAuthZ`,
       {
         method: "POST",
         body: JSON.stringify(data),
