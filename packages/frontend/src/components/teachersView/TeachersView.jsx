@@ -43,7 +43,7 @@ const TeachersView = () => {
         כיתה {classroom}
       </h1>
 
-      {isLoading ? (
+      {!isLoading ? (
         classroomData && <TableComponent tableData={classroomData} />
       ) : (
         <CircularProgress
