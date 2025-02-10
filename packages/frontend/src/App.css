@@ -3,10 +3,10 @@
   justify-content: center;
 }
 
-.login-container{
+.login-container {
   background: white;
   margin-top: 7rem;
-  height: 30rem;
+  height: min-content;
   max-width: 25rem;
   width: 90%;
   border-radius: 20px;
@@ -17,5 +17,59 @@
 .login-title {
   direction: rtl;
   margin-right: 4rem;
-  margin-top: 6rem;
-} 
+  margin-top: 1rem;
+}
+
+.tabs {
+  display: flex;
+  margin: 1rem 1rem;
+  direction: rtl;
+}
+
+.tab-student {
+  /* padding: 0.5rem 1rem; */
+  border: none;
+  background: #f0f0f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 6.3rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.tab-teacher {
+  /* padding: 0.5rem 1rem; */
+  border: none;
+  background: #f0f0f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 6.3rem;
+  padding: 0.35rem 0.5rem;
+}
+
+.tab-teacher.active {
+  background-color: #357ABD;
+  color: white;
+}
+
+.tab-teacher:hover{
+  background-color: #357ABD !important;
+}
+
+.blue-color{
+  color: #357ABD;
+}
+
+.green-color{
+  color: #83ca83;
+}
+
+.tab-student:hover{
+  background-color: #83ca83 !important;
+}
+
+.tab-student.active {
+  background: #83ca83;
+  color: white;
+}
