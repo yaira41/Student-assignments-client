@@ -216,22 +216,42 @@ const TeacherPermissions = ({ classNumbers }) => {
               <TableRow key={row.idNumber}>
                 <TableCell>{row.idNumber}</TableCell>
                 <TableCell>
-                  <Box sx={{ display: "flex", gap: 1 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      flexWrap: "wrap",
+                      maxWidth: "100%",
+                    }}
+                  >
                     {row.selectedClasses.map((cls) => (
-                      <Chip key={cls} label={cls} />
+                      <Chip
+                        key={cls}
+                        label={cls}
+                        sx={{
+                          maxWidth: "100%",
+                          wordBreak: "break-word",
+                          "& .MuiChip-label": {
+                            whiteSpace: "normal",
+                            wordWrap: "break-word",
+                          },
+                        }}
+                      />
                     ))}
                   </Box>
                 </TableCell>
                 <TableCell>
-                  <IconButton
-                    color="error"
-                    onClick={() => handleDelete(row.idNumber)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                  <IconButton color="primary" onClick={() => handleEdit(row)}>
-                    <EditIcon />
-                  </IconButton>
+                  <Box sx={{ display: "flex", gap: 1 }}>
+                    <IconButton
+                      color="error"
+                      onClick={() => handleDelete(row.idNumber)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                    <IconButton color="primary" onClick={() => handleEdit(row)}>
+                      <EditIcon />
+                    </IconButton>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
