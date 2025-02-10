@@ -31,15 +31,15 @@ const TableComponent = ({ tableData }) => {
   });
 
   const getColumnStyle = (column, backgroundColor = "#fff") => {
-    const a = columnPinning.left.indexOf(column.id);
-    let aw;
-    if (a > 0) {
-      aw = table
-        .getRowModel()
-        .rows[0].getVisibleCells()
-        .find((c) => c.column.id === columnPinning.left[a])
-        .column.getSize();
-    }
+    // const a = columnPinning.left.indexOf(column.id);
+    // let aw;
+    // if (a > 0) {
+    //   aw = table
+    //     .getRowModel()
+    //     .rows[0].getVisibleCells()
+    //     .find((c) => c.column.id === columnPinning.left[a])
+    //     .column.getSize();
+    // }
 
     return {
       width: `20rem`,
@@ -59,7 +59,7 @@ const TableComponent = ({ tableData }) => {
 
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
-  const data = useMemo(() => processData(tableData), []);
+  const data = useMemo(() => processData(tableData), [tableData]);
   const columnHelper = createColumnHelper();
 
   const createColumns = () => {
@@ -80,7 +80,7 @@ const TableComponent = ({ tableData }) => {
           <Box
             sx={{
               padding: "12px 16px",
-              backgroundColor: "#f8f9fa",
+              // backgroundColor: "#f8f9fa",
               minWidth: "max-content",
               fontWeight: 600,
               backgroundColor: "rgb(215 239 248 / 25%)",
@@ -115,7 +115,10 @@ const TableComponent = ({ tableData }) => {
     return columns;
   };
 
-  const columns = useMemo(() => createColumns(), [columnPinning]);
+  const columns = useMemo(
+    () => createColumns(),
+    [columnPinning, createColumns]
+  );
 
   const handleColumnPinning = (columnId, side) => {
     setColumnPinning((prev) => {
@@ -266,6 +269,8 @@ const TableComponent = ({ tableData }) => {
                     style={(column) => getColumnStyle(column)}
                   />
                 );
+              } else {
+                return <></>;
               }
             })}
           </thead>

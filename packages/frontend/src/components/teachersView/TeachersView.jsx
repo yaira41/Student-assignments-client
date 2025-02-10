@@ -29,7 +29,7 @@ const TeachersView = () => {
     };
 
     fetchClassroomData();
-  }, []);
+  }, [classroom]);
 
   return (
     <div
