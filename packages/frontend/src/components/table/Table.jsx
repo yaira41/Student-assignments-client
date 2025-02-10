@@ -115,7 +115,8 @@ const TableComponent = ({ tableData }) => {
     return columns;
   };
 
-  const columns = useMemo(() => createColumns(), [columnPinning]);
+  // const columns = useCallback(() => createColumns(), [columnPinning]);
+  const columns = createColumns();
 
   const handleColumnPinning = (columnId, side) => {
     setColumnPinning((prev) => {
