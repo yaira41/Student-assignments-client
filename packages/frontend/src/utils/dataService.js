@@ -1,4 +1,12 @@
 const dataService = (function () {
+  async function fetchWithErrorHandling(url, options = {}) {
+    const response = await fetch(url, options);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+  }
+
   return {
     getAllData,
     getClassesOptions,
@@ -13,32 +21,32 @@ const dataService = (function () {
 
   async function getStudent(user, classroom) {
     return (
-      await fetch(
+      await fetchWithErrorHandling(
         `${process.env.REACT_APP_API_URL}/api/Students/Student/${user.id}?classroom=${classroom}`
       )
     ).json();
   }
 
   async function getAllData(classroom) {
-    return await fetch(
+    return await fetchWithErrorHandling(
       `${process.env.REACT_APP_API_URL}/api/tabs/${classroom}`
     );
   }
 
   async function getClassroom(classroomId) {
-    return await fetch(
+    return await fetchWithErrorHandling(
       `${process.env.REACT_APP_API_URL}/api/Classes/Class/${classroomId}`
     );
   }
 
   async function getClassesOptions() {
-    return await fetch(
+    return await fetchWithErrorHandling(
       `${process.env.REACT_APP_API_URL}/api/tabs/כיתות?_format=list`
     );
   }
 
   async function getClassesNumbers() {
-    return await fetch(
+    return await fetchWithErrorHandling(
       `${process.env.REACT_APP_API_URL}/api/Classes/classesNumbers`
     );
   }
@@ -52,12 +60,12 @@ const dataService = (function () {
       url.searchParams.append("teacherId", teacherId);
     }
 
-    return await fetch(url);
+    return await fetchWithErrorHandling(url);
   }
 
   async function writeNewExcel(classroom, data) {
     const trimedClassroom = classroom.replaceAll(" ", "");
-    return await fetch(
+    return await fetchWithErrorHandling(
       `${process.env.REACT_APP_API_URL}/api/class/${trimedClassroom}`,
       {
         method: "POST",
@@ -67,7 +75,7 @@ const dataService = (function () {
   }
 
   async function updateClassesNumbers(data) {
-    return await fetch(
+    return await fetchWithErrorHandling(
       `${process.env.REACT_APP_API_URL}/api/Classes/classesNumbers`,
       {
         method: "POST",
@@ -77,7 +85,7 @@ const dataService = (function () {
   }
 
   async function updateTeachersAuthZ(data) {
-    return await fetch(
+    return await fetchWithErrorHandling(
       `${process.env.REACT_APP_API_URL}/api/Teachers/TeachersAuthZ`,
       {
         method: "POST",

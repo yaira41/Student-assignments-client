@@ -46,11 +46,7 @@ const TeacherPermissions = ({ classNumbers }) => {
       try {
         const response = await dataService.getTeachersAuthZ();
         const data = await response.json();
-        if (typeof data === Array) {
-          setPermissions(data || []);
-        } else {
-          throw new Error(data);
-        }
+        setPermissions(data || []);
       } catch (error) {
         console.log(error);
       }
