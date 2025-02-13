@@ -46,7 +46,11 @@ const TeacherPermissions = ({ classNumbers }) => {
       try {
         const response = await dataService.getTeachersAuthZ();
         const data = await response.json();
-        setPermissions(data || []);
+        if (typeof data === Array) {
+          setPermissions(data || []);
+        } else {
+          throw new Error(data);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -116,7 +120,7 @@ const TeacherPermissions = ({ classNumbers }) => {
     const updatedPermissions = permissions.filter(
       (item) => item.idNumber !== id
     );
-    setPermissions(updatedPermissions);
+    setPermissions(updatedPermissions || []);
     dataService.updateTeachersAuthZ(updatedPermissions);
   };
 
@@ -212,49 +216,53 @@ const TeacherPermissions = ({ classNumbers }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {permissions?.map((row) => (
-              <TableRow key={row.idNumber}>
-                <TableCell>{row.idNumber}</TableCell>
-                <TableCell>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 1,
-                      flexWrap: "wrap",
-                      maxWidth: "100%",
-                    }}
-                  >
-                    {row.selectedClasses.map((cls) => (
-                      <Chip
-                        key={cls}
-                        label={cls}
-                        sx={{
-                          maxWidth: "100%",
-                          wordBreak: "break-word",
-                          "& .MuiChip-label": {
-                            whiteSpace: "normal",
-                            wordWrap: "break-word",
-                          },
-                        }}
-                      />
-                    ))}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: "flex", gap: 1 }}>
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDelete(row.idNumber)}
+            {permissions &&
+              permissions?.map((row) => (
+                <TableRow key={row.idNumber}>
+                  <TableCell>{row.idNumber}</TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: 1,
+                        flexWrap: "wrap",
+                        maxWidth: "100%",
+                      }}
                     >
-                      <DeleteIcon />
-                    </IconButton>
-                    <IconButton color="primary" onClick={() => handleEdit(row)}>
-                      <EditIcon />
-                    </IconButton>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
+                      {row.selectedClasses.map((cls) => (
+                        <Chip
+                          key={cls}
+                          label={cls}
+                          sx={{
+                            maxWidth: "100%",
+                            wordBreak: "break-word",
+                            "& .MuiChip-label": {
+                              whiteSpace: "normal",
+                              wordWrap: "break-word",
+                            },
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: "flex", gap: 1 }}>
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDelete(row.idNumber)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                      <IconButton
+                        color="primary"
+                        onClick={() => handleEdit(row)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
