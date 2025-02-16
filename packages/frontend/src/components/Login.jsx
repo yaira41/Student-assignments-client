@@ -20,8 +20,6 @@ function Login({ userType }) {
         const amountOfClassData = await (
           await dataService.getClassesNumbers()
         ).json();
-        // const teachersPermissionsData = await (await dataService.getTeachersAuthZ()).json();
-        // setPermissions(data || []);
         setAmountOfAllClasses(amountOfClassData);
       } catch (error) {
         console.log(error);
