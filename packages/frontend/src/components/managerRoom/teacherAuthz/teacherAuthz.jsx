@@ -143,7 +143,7 @@ const TeacherPermissions = ({ classNumbers }) => {
           gap: 2,
           mb: 2,
           alignItems: "center",
-          font: "heebo !important",
+          fontFamily: "heebo !important",
         }}
       >
         <TextField
@@ -184,7 +184,7 @@ const TeacherPermissions = ({ classNumbers }) => {
                 <Button
                   variant={
                     tempSelectedClasses.includes(classValue)
-                      ? "outlined"
+                      ? "contained"
                       : "text"
                   }
                   color="primary"
