@@ -38,7 +38,17 @@ export const TableHeader = ({
           gap: 1,
         }}
       >
-        <span>{header}</span>
+        <span
+          style={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            maxWidth: "200px",
+          }}
+          title={header}
+        >
+          {header.length > 15 ? `${header.substring(0, 15)}...` : header}
+        </span>
 
         <Box>
           {sortDir &&
