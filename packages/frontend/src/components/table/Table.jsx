@@ -83,7 +83,7 @@ const TableComponent = ({ tableData }) => {
               // backgroundColor: "#f8f9fa",
               minWidth: "max-content",
               fontWeight: 600,
-              backgroundColor: "rgb(215 239 248 / 25%)",
+              backgroundColor: "#4092b140",
             }}
           >
             {key}
@@ -102,7 +102,30 @@ const TableComponent = ({ tableData }) => {
                 onTogglePin={(side) => handleColumnPinning(column.id, side)}
               />
             ),
-            cell: (info) => info.row.original[info.column.id],
+            cell: (info) => {
+              const cellContent = info.row.original[info.column.id];
+              let grade;
+
+              if (typeof cellContent === "string") {
+                if (cellContent === "חסר") {
+                  return (
+                    <span
+                      style={{
+                        background: "#f35858",
+                        padding: "2px 5px",
+                        borderRadius: "8px",
+                        color: "white",
+                      }}
+                    >
+                      {cellContent}
+                    </span>
+                  );
+                }
+              } else if (!isNaN(cellContent)) {
+                grade = Math.round(cellContent);
+              }
+              return grade ? grade : cellContent;
+            },
             sortingFn: createSortingFunction,
             filterFn: fuzzyFilter,
             size: 200,
@@ -200,46 +223,46 @@ const TableComponent = ({ tableData }) => {
 
   return (
     <Box id="mainTable" sx={{ direction: "rtl" }}>
+      <Box sx={{ width: "fit-content", p: 2, display: "flex", gap: 2 }}>
+        <IconButton onClick={(e) => setMenuAnchorEl(e.currentTarget)}>
+          <MoreVert />
+        </IconButton>
+        <Button
+          variant="contained"
+          onClick={removeEmptyColumns}
+          style={{ backgroundColor: "rgb(50 129 158 / 70%)" }}
+        >
+          הסרת עמודות ריקות
+        </Button>
+        <Button
+          variant="contained"
+          onClick={resetFilters}
+          disabled={columnFilters.length === 0}
+          style={{ backgroundColor: "rgb(50 129 158 / 70%)" }}
+        >
+          נקה סינון
+        </Button>
+      </Box>
+      <ColumnMenu
+        anchorEl={menuAnchorEl}
+        onClose={() => setMenuAnchorEl(null)}
+        columns={table.getAllLeafColumns()}
+        visibility={columnVisibility}
+        onColumnToggle={handleColumnToggle}
+        onSelectAllToggle={handleSelectAllToggle}
+        tableData={tableData}
+        columnPinning={columnPinning}
+        onColumnPinning={handleColumnPinning}
+      />
       <Paper
         elevation={2}
         sx={{
           overflow: "auto",
-          width: "99%",
-          height: "99%",
-          border: "1px solid gray",
+          width: "98%",
+          height: "43rem",
+          margin: "0 20px 20px 0",
         }}
       >
-        <Box sx={{ width: "fit-content", p: 2, display: "flex", gap: 2 }}>
-          <IconButton onClick={(e) => setMenuAnchorEl(e.currentTarget)}>
-            <MoreVert />
-          </IconButton>
-          <Button
-            variant="contained"
-            onClick={removeEmptyColumns}
-            style={{ backgroundColor: "rgb(50 129 158 / 70%)" }}
-          >
-            הסרת עמודות ריקות
-          </Button>
-          <Button
-            variant="contained"
-            onClick={resetFilters}
-            disabled={columnFilters.length === 0}
-            style={{ backgroundColor: "rgb(50 129 158 / 70%)" }}
-          >
-            נקה סינון
-          </Button>
-        </Box>
-        <ColumnMenu
-          anchorEl={menuAnchorEl}
-          onClose={() => setMenuAnchorEl(null)}
-          columns={table.getAllLeafColumns()}
-          visibility={columnVisibility}
-          onColumnToggle={handleColumnToggle}
-          onSelectAllToggle={handleSelectAllToggle}
-          tableData={tableData}
-          columnPinning={columnPinning}
-          onColumnPinning={handleColumnPinning}
-        />
         <StyledTable>
           <thead style={{ height: "5rem" }}>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -272,17 +295,12 @@ const TableComponent = ({ tableData }) => {
               }
             })}
           </thead>
-          <tbody
-            style={{
-              overflowY: "auto",
-              height: "13rem !important",
-            }}
-          >
+          <tbody>
             {table.getRowModel().rows.map((row, index) => (
               <tr
                 key={row.id}
                 style={{
-                  backgroundColor: index % 2 === 0 ? "#ffffff" : "#f8f9fa",
+                  backgroundColor: index % 2 === 0 ? "#ffffff" : "#4092b114",
                 }}
               >
                 {row.getVisibleCells().map((cell) => (
@@ -290,7 +308,7 @@ const TableComponent = ({ tableData }) => {
                     key={cell.id}
                     style={getColumnStyle(
                       cell.column,
-                      index % 2 === 0 ? "#ffffff" : "#f8f9fa"
+                      index % 2 === 0 ? "#ffffff" : "#4092b114"
                     )}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
