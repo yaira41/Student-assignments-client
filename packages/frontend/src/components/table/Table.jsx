@@ -30,7 +30,7 @@ const TableComponent = ({ tableData }) => {
     right: [],
   });
 
-  const getColumnStyle = (column, backgroundColor = "#fff") => {
+  const getColumnStyle = (column, backgroundColor = "#ffffff") => {
     // const a = columnPinning.left.indexOf(column.id);
     // let aw;
     // if (a > 0) {
@@ -53,7 +53,11 @@ const TableComponent = ({ tableData }) => {
         : undefined,
 
       zIndex: columnPinning.left.includes(column.id) ? 1 : 0,
-      backgroundColor,
+      backgroundColor:
+        backgroundColor !== "#ffffff" && columnPinning.left.includes(column.id)
+          ? "#d3e4ea"
+          : backgroundColor,
+      opacity: columnPinning.left.includes(column.id) ?? "100%",
     };
   };
 
