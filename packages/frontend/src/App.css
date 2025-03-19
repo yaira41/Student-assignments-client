@@ -22,7 +22,7 @@
 
 .tabs {
   display: flex;
-  margin: 1rem 1rem;
+  margin: 2rem 1rem;
   direction: rtl;
 }
 
@@ -61,15 +61,15 @@
   color: #357ABD;
 }
 
-.green-color{
-  color: #83ca83;
+.pink-color{
+  color: #fca7c0;
 }
 
 .tab-student:hover{
-  background-color: #83ca83 !important;
+  background-color: #fca7c0 !important;
 }
 
 .tab-student.active {
-  background: #83ca83;
+  background: #fca7c0;
   color: white;
 }
