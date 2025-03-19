@@ -21,7 +21,11 @@ export const ColumnMenu = ({
           <Checkbox checked={visibility[column.id] ?? true} />
           <ListItemText
             primary={
-              tableData[0][column.id] ? tableData[0][column.id] : column.id
+              tableData[0][column.id]
+                ? `${column.id.replace(/_\d+$/, "")} - ${
+                    tableData[0][column.id]
+                  }`
+                : column.id
             }
           />
         </MenuItem>
