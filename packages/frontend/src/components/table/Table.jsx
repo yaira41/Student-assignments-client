@@ -26,7 +26,7 @@ const TableComponent = ({ tableData }) => {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnResizing, setColumnResizing] = useState({});
   const [columnPinning, setColumnPinning] = useState({
-    left: [],
+    left: ["שם התלמידה"],
     right: [],
   });
 
