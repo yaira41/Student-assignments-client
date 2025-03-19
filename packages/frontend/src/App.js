@@ -43,7 +43,7 @@ function App() {
         <div className="login-title">
           <h1>התחברות</h1>
           <h3
-            className={`${userType === "מורה" ? "blue-color" : "green-color"}`}
+            className={`${userType === "מורה" ? "blue-color" : "pink-color"}`}
           >
             ברוכה הבאה!
           </h3>
