@@ -58,6 +58,7 @@ const TableComponent = ({ tableData }) => {
           ? "#d3e4ea"
           : backgroundColor,
       opacity: columnPinning.left.includes(column.id) ?? "100%",
+      textAlign: "center",
     };
   };
 
