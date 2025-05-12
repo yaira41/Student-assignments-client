@@ -1,11 +1,6 @@
 import React from "react";
-import { Box, IconButton } from "@mui/material";
-import {
-  KeyboardArrowUp,
-  KeyboardArrowDown,
-  PushPin,
-  PushPinOutlined,
-} from "@mui/icons-material";
+import { Box } from "@mui/material";
+import { KeyboardArrowUp, KeyboardArrowDown } from "@mui/icons-material";
 import { HeaderContent } from "./table.styles";
 
 export const TableHeader = ({
@@ -14,12 +9,13 @@ export const TableHeader = ({
   isPinned = false,
   onTogglePin,
 }) => {
+  console.log({ isPinned, onTogglePin });
   const sortDir = column.getIsSorted();
-  const isPinable = header === "שם התלמידה";
+  // const isPinable = header === "שם התלמידה";
 
-  const handlePinLeft = () => {
-    onTogglePin("left");
-  };
+  // const handlePinLeft = () => {
+  //   onTogglePin("left");
+  // };
 
   const handleSort = (e) => {
     // Prevent sort when clicking the pin button

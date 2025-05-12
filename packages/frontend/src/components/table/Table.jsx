@@ -184,9 +184,9 @@ const TableComponent = ({ tableData }) => {
     setColumnVisibility(newVisibility);
   };
 
-  const resetFilters = () => {
-    setColumnFilters([]);
-  };
+  // const resetFilters = () => {
+  //   setColumnFilters([]);
+  // };
 
   const table = useReactTable({
     data,
