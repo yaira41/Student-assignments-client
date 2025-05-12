@@ -7,17 +7,17 @@ import {
   getSortedRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import { Paper, Button, IconButton, Box } from "@mui/material";
+import { Paper, Button, IconButton, Box, TextField } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
 import { StyledTable, DataCell } from "./table.styles";
 import { TableHeader } from "./TableHeader";
-import { FilterRow } from "./FilterRow";
 import { ColumnMenu } from "./ColumnMenu";
 import {
   getHeadersGroups,
   createSortingFunction,
   processData,
   fuzzyFilter,
+  generateBlueShades,
 } from "../../utils/tableUtils";
 
 const TableComponent = ({ tableData }) => {
@@ -31,15 +31,8 @@ const TableComponent = ({ tableData }) => {
   });
 
   const getColumnStyle = (column, backgroundColor = "#ffffff") => {
-    // const a = columnPinning.left.indexOf(column.id);
-    // let aw;
-    // if (a > 0) {
-    //   aw = table
-    //     .getRowModel()
-    //     .rows[0].getVisibleCells()
-    //     .find((c) => c.column.id === columnPinning.left[a])
-    //     .column.getSize();
-    // }
+    const a = column.parent === undefined ? true : false;
+    // console.log(column);
 
     return {
       width: `20rem`,
@@ -59,18 +52,24 @@ const TableComponent = ({ tableData }) => {
           : backgroundColor,
       opacity: columnPinning.left.includes(column.id) ?? "100%",
       textAlign: "center",
+      borderRight: a ? "" : "1px solid #4092b140",
+      borderBottom: "none",
     };
   };
 
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
   const data = useMemo(() => processData(tableData), [tableData]);
+  const subjectsColors = useMemo(
+    () => generateBlueShades(Object.keys(data?.[0]).length || 0),
+    [data]
+  );
   const columnHelper = createColumnHelper();
 
   const createColumns = () => {
     const columns = [
       columnHelper.accessor("serialNumber", {
-        header: "#",
+        header: "",
         cell: (info) => info.row.index + 1,
         enableSorting: false,
         size: 50,
@@ -78,67 +77,70 @@ const TableComponent = ({ tableData }) => {
       }),
     ];
 
-    Object.entries(getHeadersGroups(tableData)).forEach(([key, values]) => {
-      const group = columnHelper.group({
-        id: key,
-        header: () => (
-          <Box
-            sx={{
-              padding: "12px 16px",
-              // backgroundColor: "#f8f9fa",
-              minWidth: "max-content",
-              fontWeight: 600,
-              backgroundColor: "#4092b140",
-            }}
-          >
-            {key}
-          </Box>
-        ),
-        columns: values.map(({ accessorKey, header }) =>
-          columnHelper.accessor(accessorKey, {
-            header: ({ column }) => (
-              <TableHeader
-                column={column}
-                header={header}
-                isPinned={
-                  columnPinning.left.includes(column.id) ||
-                  columnPinning.right.includes(column.id)
-                }
-                onTogglePin={(side) => handleColumnPinning(column.id, side)}
-              />
-            ),
-            cell: (info) => {
-              const cellContent = info.row.original[info.column.id];
-              let grade;
+    Object.entries(getHeadersGroups(tableData)).forEach(
+      ([key, values], index) => {
+        const group = columnHelper.group({
+          id: key,
+          meta: "groupHeader",
+          header: () => (
+            <Box
+              sx={{
+                padding: "12px 16px",
+                marginRight: key !== "כללי" && "10px",
+                minWidth: "max-content",
+                fontWeight: 600,
+                backgroundColor: subjectsColors[index],
+              }}
+            >
+              {key}
+            </Box>
+          ),
+          columns: values.map(({ accessorKey, header }) =>
+            columnHelper.accessor(accessorKey, {
+              header: ({ column }) => (
+                <TableHeader
+                  column={column}
+                  header={header}
+                  isPinned={
+                    columnPinning.left.includes(column.id) ||
+                    columnPinning.right.includes(column.id)
+                  }
+                  onTogglePin={(side) => handleColumnPinning(column.id, side)}
+                />
+              ),
+              cell: (info) => {
+                const cellContent = info.row.original[info.column.id];
+                let grade;
 
-              if (typeof cellContent === "string") {
-                if (cellContent === "חסר") {
-                  return (
-                    <span
-                      style={{
-                        background: "#f35858",
-                        padding: "2px 5px",
-                        borderRadius: "8px",
-                        color: "white",
-                      }}
-                    >
-                      {cellContent}
-                    </span>
-                  );
+                if (typeof cellContent === "string") {
+                  if (cellContent === "חסר") {
+                    return (
+                      <span
+                        style={{
+                          background: "#f35858",
+                          padding: "2px 5px",
+                          borderRadius: "8px",
+                          color: "white",
+                        }}
+                      >
+                        {cellContent}
+                      </span>
+                    );
+                  }
+                } else if (!isNaN(cellContent)) {
+                  grade = Math.round(cellContent);
                 }
-              } else if (!isNaN(cellContent)) {
-                grade = Math.round(cellContent);
-              }
-              return grade ? grade : cellContent;
-            },
-            sortingFn: createSortingFunction,
-            filterFn: fuzzyFilter,
-            size: 200,
-          })
-        ),
-      });
-      columns.push(group);
-    });
+                return grade ? grade : cellContent;
+              },
+              sortingFn: createSortingFunction,
+              filterFn: fuzzyFilter,
+              size: 200,
+            })
+          ),
+        });
+        columns.push(group);
+      }
+    );
 
     return columns;
   };
@@ -228,7 +230,15 @@ const TableComponent = ({ tableData }) => {
 
   return (
     <Box id="mainTable" sx={{ direction: "rtl" }}>
-      <Box sx={{ width: "fit-content", p: 2, display: "flex", gap: 2 }}>
+      <Box
+        sx={{
+          width: "fit-content",
+          p: 2,
+          display: "flex",
+          gap: 2,
+          marginRight: "-2rem",
+        }}
+      >
         <IconButton onClick={(e) => setMenuAnchorEl(e.currentTarget)}>
           <MoreVert />
         </IconButton>
@@ -239,14 +249,24 @@ const TableComponent = ({ tableData }) => {
         >
           הסרת עמודות ריקות
         </Button>
-        <Button
-          variant="contained"
-          onClick={resetFilters}
-          disabled={columnFilters.length === 0}
-          style={{ backgroundColor: "rgb(50 129 158 / 70%)" }}
-        >
-          נקה סינון
-        </Button>
+        <TextField
+          sx={{ height: "20px !important" }}
+          margin="normal"
+          placeholder="סנן שם תלמידה"
+          value={
+            table
+              .getHeaderGroups()[1]
+              ?.headers?.find((x) => x.id === "שם התלמידה")
+              ?.column?.getFilterValue() || ""
+          }
+          onChange={(e) =>
+            table
+              .getHeaderGroups()[1]
+              .headers?.find((x) => x.id === "שם התלמידה")
+              .column.setFilterValue(e.target.value)
+          }
+          onClick={(e) => e.stopPropagation()}
+        />
       </Box>
       <ColumnMenu
         anchorEl={menuAnchorEl}
@@ -263,16 +283,16 @@ const TableComponent = ({ tableData }) => {
         elevation={2}
         sx={{
           overflow: "auto",
-          width: "98%",
+          width: "93%",
           height: "43rem",
-          margin: "0 20px 20px 0",
+          margin: "0 0 20px 0",
         }}
       >
         <StyledTable>
           <thead style={{ height: "5rem" }}>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
+                {headerGroup.headers?.map((header) => (
                   <th
                     key={header.id}
                     colSpan={header.colSpan}
@@ -286,7 +306,7 @@ const TableComponent = ({ tableData }) => {
                 ))}
               </tr>
             ))}
-            {table.getHeaderGroups().map((headerGroup, index) => {
+            {/* {table.getHeaderGroups().map((headerGroup, index) => {
               if (headerGroup.id !== "0") {
                 return (
                   <FilterRow
@@ -298,14 +318,14 @@ const TableComponent = ({ tableData }) => {
               } else {
                 return <></>;
               }
-            })}
+            })} */}
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row, index) => (
               <tr
                 key={row.id}
                 style={{
-                  backgroundColor: index % 2 === 0 ? "#ffffff" : "#4092b114",
+                  backgroundColor: index % 2 !== 0 ? "#ffffff" : "#4092b114",
                 }}
               >
                 {row.getVisibleCells().map((cell) => (
@@ -313,7 +333,7 @@ const TableComponent = ({ tableData }) => {
                     key={cell.id}
                     style={getColumnStyle(
                       cell.column,
-                      index % 2 === 0 ? "#ffffff" : "#4092b114"
+                      index % 2 !== 0 ? "#ffffff" : "#4092b114"
                     )}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

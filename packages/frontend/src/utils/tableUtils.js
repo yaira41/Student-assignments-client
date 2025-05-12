@@ -95,3 +95,20 @@ export const fuzzyFilter = (row, columnId, filterValue) => {
 
   return cellValue.includes(searchValue);
 };
+
+export const generateBlueShades = (count) => {
+  const baseColor = [64, 146, 177];
+  const alpha = 0.4;
+
+  const lightenFactor = 2 / count;
+
+  return Array.from({ length: count }, (_, i) => {
+    const factor = 1 + lightenFactor * i;
+
+    const r = Math.min(255, Math.round(baseColor[0] * factor));
+    const g = Math.min(255, Math.round(baseColor[1] * factor));
+    const b = Math.min(255, Math.round(baseColor[2] * factor));
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  });
+};

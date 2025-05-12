@@ -13,27 +13,31 @@ const FilterCell = styled(Box)(({ theme }) => ({
 export const FilterRow = ({ headers, style }) => {
   return (
     <tr>
-      {headers.map((header) => (
-        <td key={header.id} style={style(header.column)}>
-          <FilterCell>
-            {!header.isPlaceholder && (
-              <TextField
-                size="small"
-                fullWidth
-                placeholder="סנן..."
-                value={header.column.getFilterValue() || ""}
-                onChange={(e) => header.column.setFilterValue(e.target.value)}
-                onClick={(e) => e.stopPropagation()}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    backgroundColor: "white",
-                  },
-                }}
-              />
-            )}
-          </FilterCell>
-        </td>
-      ))}
+      {headers.map((header) =>
+        header.id === "שם התלמידה" ? (
+          <td key={header.id} style={style(header.column)}>
+            <FilterCell>
+              {!header.isPlaceholder && (
+                <TextField
+                  size="small"
+                  fullWidth
+                  placeholder="סנן..."
+                  value={header.column.getFilterValue() || ""}
+                  onChange={(e) => header.column.setFilterValue(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "white",
+                    },
+                  }}
+                />
+              )}
+            </FilterCell>
+          </td>
+        ) : (
+          <></>
+        )
+      )}
     </tr>
   );
 };
