@@ -31,11 +31,11 @@ function generateClassLabels(classConfig) {
 const TeacherPermissions = ({ classNumbers }) => {
   generateClassLabels(classNumbers);
   const [idNumber, setIdNumber] = useState("");
+  const [teacherName, setTeacherName] = useState("");
   const [openClassDialog, setOpenClassDialog] = useState(false);
   const [tempSelectedClasses, setTempSelectedClasses] = useState([]);
   const [permissions, setPermissions] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
-  console.log({ permissions });
   const classOptions = useMemo(
     () => generateClassLabels(classNumbers),
     [classNumbers]
@@ -63,6 +63,7 @@ const TeacherPermissions = ({ classNumbers }) => {
     setOpenClassDialog(false);
     if (isEditMode) {
       setIdNumber("");
+      setTeacherName("");
       setIsEditMode(false);
     }
     setTempSelectedClasses([]);
@@ -82,7 +83,7 @@ const TeacherPermissions = ({ classNumbers }) => {
     if (isEditMode) {
       updatedPermissions = permissions.map((item) =>
         item.idNumber === idNumber
-          ? { ...item, selectedClasses: tempSelectedClasses }
+          ? { ...item, teacherName, selectedClasses: tempSelectedClasses }
           : item
       );
     } else {
@@ -91,12 +92,13 @@ const TeacherPermissions = ({ classNumbers }) => {
       if (permissions.find((p) => p.idNumber === idNumber)) {
         updatedPermissions = permissions.map((item) =>
           item.idNumber === idNumber
-            ? { ...item, selectedClasses: tempSelectedClasses }
+            ? { ...item, teacherName, selectedClasses: tempSelectedClasses }
             : item
         );
       } else {
         const newEntry = {
           idNumber,
+          teacherName,
           selectedClasses: tempSelectedClasses,
         };
         updatedPermissions = [...permissions, newEntry];
@@ -107,6 +109,7 @@ const TeacherPermissions = ({ classNumbers }) => {
     await dataService.updateTeachersAuthZ(updatedPermissions);
 
     setIdNumber("");
+    setTeacherName("");
     setTempSelectedClasses([]);
     setOpenClassDialog(false);
     setIsEditMode(false);
@@ -122,6 +125,7 @@ const TeacherPermissions = ({ classNumbers }) => {
 
   const handleEdit = (permission) => {
     setIdNumber(permission.idNumber);
+    setTeacherName(permission.teacherName || "");
     handleOpenClassDialog(permission.selectedClasses);
     setIsEditMode(true);
   };
@@ -155,6 +159,15 @@ const TeacherPermissions = ({ classNumbers }) => {
           onChange={(e) => setIdNumber(e.target.value)}
           sx={{ flex: 1 }}
         />
+        <TextField
+          label="שם המורה"
+          InputLabelProps={{ shrink: true }}
+          size="medium"
+          variant="outlined"
+          value={teacherName}
+          onChange={(e) => setTeacherName(e.target.value)}
+          sx={{ flex: 1 }}
+        />
         <Button
           variant="outlined"
           color="primary"
@@ -178,6 +191,19 @@ const TeacherPermissions = ({ classNumbers }) => {
       >
         <DialogTitle>בחר כיתות</DialogTitle>
         <DialogContent>
+          {isEditMode && (
+            <Box sx={{ mb: 3 }}>
+              <TextField
+                label="שם המורה"
+                fullWidth
+                value={teacherName}
+                onChange={(e) => setTeacherName(e.target.value)}
+                margin="normal"
+                variant="outlined"
+                InputLabelProps={{ shrink: true }}
+              />
+            </Box>
+          )}
           <Grid container spacing={2}>
             {classOptions.map((classValue) => (
               <Grid item xs={2} key={classValue}>
@@ -207,6 +233,7 @@ const TeacherPermissions = ({ classNumbers }) => {
           <TableHead>
             <TableRow>
               <TableCell>תעודת זהות</TableCell>
+              <TableCell>שם המורה</TableCell>
               <TableCell sx={{ textAlign: "right" }}>כיתות</TableCell>
               <TableCell>פעולות</TableCell>
             </TableRow>
@@ -216,6 +243,7 @@ const TeacherPermissions = ({ classNumbers }) => {
               permissions?.map((row) => (
                 <TableRow key={row.idNumber}>
                   <TableCell>{row.idNumber}</TableCell>
+                  <TableCell>{row.teacherName || ""}</TableCell>
                   <TableCell>
                     <Box
                       sx={{
