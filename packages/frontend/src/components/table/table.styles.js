@@ -7,7 +7,6 @@ export const StyledTable = styled("table")({
   borderCollapse: "separate",
   borderSpacing: 0,
   "& th, & td": {
-    borderRight: "1px solid #e0e0e0",
     borderBottom: "1px solid #e0e0e0",
   },
 });

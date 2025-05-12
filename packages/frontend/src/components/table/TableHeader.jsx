@@ -58,18 +58,6 @@ export const TableHeader = ({
               <KeyboardArrowDown color="primary" />
             ))}
         </Box>
-
-        {isPinable && (
-          <Box>
-            <IconButton
-              size="small"
-              onClick={handlePinLeft}
-              color={isPinned ? "primary" : "default"}
-            >
-              {isPinned ? <PushPin /> : <PushPinOutlined />}
-            </IconButton>
-          </Box>
-        )}
       </Box>
     </HeaderContent>
   );
