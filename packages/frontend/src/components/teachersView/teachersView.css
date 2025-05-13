@@ -4,8 +4,8 @@
     left: 0;
     right: 0;
     width: 100%;
-    height: auto;
-    background: url('../../../public/assets/cards-background2.jpg');
+    height: 100%;
+    background: url('../../../public/assets/table-background.jpeg');
     background-size: cover;
 }
 
