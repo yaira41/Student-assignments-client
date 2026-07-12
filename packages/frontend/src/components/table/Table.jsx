@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-table";
 import { Paper, Button, IconButton, Box, TextField } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
-import { StyledTable, DataCell } from "./table.styles";
+import { StyledTable, DataCell, TableContainerWrapper } from "./table.styles";
 import { TableHeader } from "./TableHeader";
 import { ColumnMenu } from "./ColumnMenu";
 import {
@@ -25,35 +25,46 @@ const TableComponent = ({ tableData }) => {
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnResizing, setColumnResizing] = useState({});
-  const [columnPinning, setColumnPinning] = useState({
-    left: ["שם התלמידה"],
-    right: [],
-  });
+  const [columnPinning, setColumnPinning] = useState({ left: [], right: [] });
 
-  const getColumnStyle = (column, backgroundColor = "#ffffff") => {
-    const a = column.parent === undefined ? true : false;
-    // console.log(column);
+  const getColumnStyle = (
+    column,
+    backgroundColor = "#ffffff",
+    isHeader = false
+  ) => {
+    const isSerial = column.id === "serialNumber";
+    const isName = column.id === "שם התלמידה";
+    const isPinned = isSerial || isName;
+    const isGroupHeader = column.columnDef?.meta === "groupHeader";
+
+    let rightOffset = undefined;
+    if (isSerial) rightOffset = "0px";
+    if (isName) rightOffset = "60px";
 
     return {
-      width: `20rem`,
-      boxShadow: columnPinning.left.includes(column.id)
-        ? "4px 0 4px -4px gray inset"
-        : undefined,
-      position: columnPinning.left.includes(column.id) ? "sticky" : "relative",
+      // עמודות אנכיות תופסות הרבה פחות רוחב כעת! (מ-20rem ירדנו ל-4.5rem בשביל המראה האנכי)
+      width: isSerial ? "60px" : isName ? "200px" : "4.5rem",
+      minWidth: isSerial ? "60px" : isName ? "200px" : "4.5rem",
+      position: isPinned ? "sticky" : isHeader ? "sticky" : "relative",
+      right: rightOffset,
       left: undefined,
-      right: columnPinning.left.includes(column.id)
-        ? `${column.getAfter("left")}px`
-        : undefined,
-
-      zIndex: columnPinning.left.includes(column.id) ? 1 : 0,
+      zIndex: isPinned
+        ? isGroupHeader
+          ? 6
+          : 5
+        : isHeader
+        ? isGroupHeader
+          ? 4
+          : 3
+        : 1,
       backgroundColor:
-        backgroundColor !== "#ffffff" && columnPinning.left.includes(column.id)
+        backgroundColor !== "#ffffff" && isPinned && !isHeader
           ? "#d3e4ea"
           : backgroundColor,
-      opacity: columnPinning.left.includes(column.id) ?? "100%",
       textAlign: "center",
-      borderRight: a ? "" : "1px solid #4092b140",
-      borderBottom: "none",
+      borderRight: isGroupHeader ? "" : "1px solid #4092b140",
+      borderBottom: "1px solid #e0e0e0",
+      boxShadow: isName ? "4px 0 4px -4px gray inset" : undefined,
     };
   };
 
@@ -61,7 +72,7 @@ const TableComponent = ({ tableData }) => {
 
   const data = useMemo(() => processData(tableData), [tableData]);
   const subjectsColors = useMemo(
-    () => generateBlueShades(Object.keys(data?.[0]).length || 0),
+    () => generateBlueShades(Object.keys(data?.[0] || {}).length || 0),
     [data]
   );
   const columnHelper = createColumnHelper();
@@ -69,10 +80,11 @@ const TableComponent = ({ tableData }) => {
   const createColumns = () => {
     const columns = [
       columnHelper.accessor("serialNumber", {
-        header: "",
+        id: "serialNumber",
+        header: "#",
         cell: (info) => info.row.index + 1,
         enableSorting: false,
-        size: 50,
+        size: 60,
         enablePinning: false,
       }),
     ];
@@ -102,15 +114,13 @@ const TableComponent = ({ tableData }) => {
                   column={column}
                   header={header}
                   isPinned={
-                    columnPinning.left.includes(column.id) ||
-                    columnPinning.right.includes(column.id)
+                    column.id === "שם התלמידה" || column.id === "serialNumber"
                   }
-                  onTogglePin={(side) => handleColumnPinning(column.id, side)}
+                  onTogglePin={() => {}}
                 />
               ),
               cell: (info) => {
                 const cellContent = info.row.original[info.column.id];
-                let grade;
 
                 if (typeof cellContent === "string") {
                   if (cellContent === "חסר") {
@@ -127,14 +137,20 @@ const TableComponent = ({ tableData }) => {
                       </span>
                     );
                   }
-                } else if (!isNaN(cellContent)) {
-                  grade = Math.round(cellContent);
+                } else if (
+                  typeof cellContent === "number" &&
+                  !isNaN(cellContent)
+                ) {
+                  if (cellContent > 0 && cellContent < 1) {
+                    return cellContent;
+                  }
+                  return Math.round(cellContent);
                 }
-                return grade ? grade : cellContent;
+                return cellContent;
               },
               sortingFn: createSortingFunction,
               filterFn: fuzzyFilter,
-              size: 200,
+              size: 80,
             })
           ),
         });
@@ -145,29 +161,7 @@ const TableComponent = ({ tableData }) => {
     return columns;
   };
 
-  // const columns = useCallback(() => createColumns(), [columnPinning]);
-  const columns = createColumns();
-
-  const handleColumnPinning = (columnId, side) => {
-    setColumnPinning((prev) => {
-      const leftIndex = prev.left.indexOf(columnId);
-      const rightIndex = prev.right.indexOf(columnId);
-
-      if (leftIndex !== -1 || rightIndex !== -1) {
-        // If already pinned, unpin
-        return {
-          left: prev.left.filter((id) => id !== columnId),
-          right: prev.right.filter((id) => id !== columnId),
-        };
-      }
-
-      // Pin to the specified side
-      return {
-        ...prev,
-        [side]: [...prev[side], columnId],
-      };
-    });
-  };
+  const columns = useMemo(() => createColumns(), [tableData, subjectsColors]);
 
   const removeEmptyColumns = () => {
     const newVisibility = {};
@@ -175,7 +169,12 @@ const TableComponent = ({ tableData }) => {
       if (group.columns) {
         group.columns.forEach((col) => {
           if (col.accessorKey) {
-            const hasValues = data.some((row) => row[col.accessorKey]);
+            const hasValues = data.some((row) => {
+              if (!row["תז"]) {
+                return "";
+              }
+              return row[col.accessorKey];
+            });
             newVisibility[col.accessorKey] = hasValues;
           }
         });
@@ -183,10 +182,6 @@ const TableComponent = ({ tableData }) => {
     });
     setColumnVisibility(newVisibility);
   };
-
-  // const resetFilters = () => {
-  //   setColumnFilters([]);
-  // };
 
   const table = useReactTable({
     data,
@@ -229,16 +224,8 @@ const TableComponent = ({ tableData }) => {
   };
 
   return (
-    <Box id="mainTable" sx={{ direction: "rtl" }}>
-      <Box
-        sx={{
-          width: "fit-content",
-          p: 2,
-          display: "flex",
-          gap: 2,
-          marginRight: "-2rem",
-        }}
-      >
+    <Box id="mainTable" sx={{ direction: "rtl", width: "100%" }}>
+      <Box sx={{ p: 2, display: "flex", gap: 2, alignItems: "center" }}>
         <IconButton onClick={(e) => setMenuAnchorEl(e.currentTarget)}>
           <MoreVert />
         </IconButton>
@@ -250,8 +237,7 @@ const TableComponent = ({ tableData }) => {
           הסרת עמודות ריקות
         </Button>
         <TextField
-          sx={{ height: "20px !important" }}
-          margin="normal"
+          size="small"
           placeholder="סנן שם תלמידה"
           value={
             table
@@ -262,12 +248,13 @@ const TableComponent = ({ tableData }) => {
           onChange={(e) =>
             table
               .getHeaderGroups()[1]
-              .headers?.find((x) => x.id === "שם התלמידה")
-              .column.setFilterValue(e.target.value)
+              ?.headers?.find((x) => x.id === "שם התלמידה")
+              ?.column.setFilterValue(e.target.value)
           }
           onClick={(e) => e.stopPropagation()}
         />
       </Box>
+
       <ColumnMenu
         anchorEl={menuAnchorEl}
         onClose={() => setMenuAnchorEl(null)}
@@ -277,73 +264,67 @@ const TableComponent = ({ tableData }) => {
         onSelectAllToggle={handleSelectAllToggle}
         tableData={tableData}
         columnPinning={columnPinning}
-        onColumnPinning={handleColumnPinning}
+        onColumnPinning={() => {}}
       />
-      <Paper
-        elevation={2}
-        sx={{
-          overflow: "auto",
-          width: "93%",
-          height: "43rem",
-          margin: "0 0 20px 0",
-        }}
-      >
+
+      <TableContainerWrapper elevation={2}>
         <StyledTable>
-          <thead style={{ height: "5rem" }}>
-            {table.getHeaderGroups().map((headerGroup) => (
+          <thead>
+            {table.getHeaderGroups().map((headerGroup, groupIndex) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers?.map((header) => (
-                  <th
-                    key={header.id}
-                    colSpan={header.colSpan}
-                    style={getColumnStyle(header.column)}
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </th>
-                ))}
+                {headerGroup.headers?.map((header) => {
+                  // חישוב גבהים דינמי ל-3 שורות הכותרת כדי למנוע חפיפות
+                  let topOffset = "0px";
+                  if (groupIndex === 1) topOffset = "48px";
+                  if (groupIndex === 2) topOffset = "96px";
+
+                  const baseStyle = getColumnStyle(
+                    header.column,
+                    "#f8fafd",
+                    true
+                  );
+                  return (
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      style={{
+                        ...baseStyle,
+                        top: topOffset,
+                        verticalAlign: "bottom", // דואג שהטקסט האנכי יישב יפה מלמטה
+                      }}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                    </th>
+                  );
+                })}
               </tr>
             ))}
-            {/* {table.getHeaderGroups().map((headerGroup, index) => {
-              if (headerGroup.id !== "0") {
-                return (
-                  <FilterRow
-                    key={"filter-row" + index}
-                    headers={headerGroup.headers}
-                    style={(column) => getColumnStyle(column)}
-                  />
-                );
-              } else {
-                return <></>;
-              }
-            })} */}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map((row, index) => (
-              <tr
-                key={row.id}
-                style={{
-                  backgroundColor: index % 2 !== 0 ? "#ffffff" : "#4092b114",
-                }}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <DataCell
-                    key={cell.id}
-                    style={getColumnStyle(
-                      cell.column,
-                      index % 2 !== 0 ? "#ffffff" : "#4092b114"
-                    )}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </DataCell>
-                ))}
-              </tr>
-            ))}
+            {table.getRowModel().rows.map((row, index) => {
+              const rowBg = index % 2 !== 0 ? "#ffffff" : "#4092b114";
+              return (
+                <tr key={row.id} style={{ backgroundColor: rowBg }}>
+                  {row.getVisibleCells().map((cell) => (
+                    <DataCell
+                      key={cell.id}
+                      style={getColumnStyle(cell.column, rowBg, false)}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </DataCell>
+                  ))}
+                </tr>
+              );
+            })}
           </tbody>
         </StyledTable>
-      </Paper>
+      </TableContainerWrapper>
     </Box>
   );
 };
