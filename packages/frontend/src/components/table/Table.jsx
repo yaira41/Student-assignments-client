@@ -159,7 +159,7 @@ const TableComponent = ({ tableData }) => {
     );
 
     return columns;
-  }, [tableData, subjectsColors]);
+  }, [tableData, subjectsColors, columnHelper]);
 
   const removeEmptyColumns = () => {
     const newVisibility = {};
