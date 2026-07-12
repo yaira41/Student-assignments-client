@@ -47,8 +47,6 @@ export const StyledTable = styled("table")({
 
 export const HeaderCell = styled("th")({
   backgroundColor: "#f8fafd",
-  transform: "rotate(-90deg)",
-  transformOrigin: "center",
   position: "relative",
   padding: 0,
   userSelect: "none",

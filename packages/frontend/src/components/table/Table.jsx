@@ -8,7 +8,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { Paper, Button, IconButton, Box, TextField } from "@mui/material";
-import { MoreVert, Rotate90DegreesCcw } from "@mui/icons-material";
+import { MoreVert } from "@mui/icons-material";
 import { StyledTable, DataCell, TableContainerWrapper } from "./table.styles";
 import { TableHeader } from "./TableHeader";
 import { ColumnMenu } from "./ColumnMenu";
@@ -19,7 +19,6 @@ import {
   fuzzyFilter,
   generateBlueShades,
 } from "../../utils/tableUtils";
-import { transform } from "typescript";
 
 const TableComponent = ({ tableData }) => {
   const [sorting, setSorting] = useState([]);
@@ -307,8 +306,6 @@ const TableComponent = ({ tableData }) => {
                       style={{
                         ...baseStyle,
                         top: topOffset,
-                        transform: "rotate(-90deg)",
-                        transformOrigin: "center",
                       }}
                     >
                       {flexRender(
