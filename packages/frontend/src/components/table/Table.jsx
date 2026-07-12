@@ -7,7 +7,7 @@ import {
   getSortedRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import { Paper, Button, IconButton, Box, TextField } from "@mui/material";
+import { Button, IconButton, Box, TextField } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
 import { StyledTable, DataCell, TableContainerWrapper } from "./table.styles";
 import { TableHeader } from "./TableHeader";
@@ -77,7 +77,7 @@ const TableComponent = ({ tableData }) => {
   );
   const columnHelper = createColumnHelper();
 
-  const createColumns = () => {
+  const columns = useMemo(() => {
     const columns = [
       columnHelper.accessor("serialNumber", {
         id: "serialNumber",
@@ -159,9 +159,7 @@ const TableComponent = ({ tableData }) => {
     );
 
     return columns;
-  };
-
-  const columns = useMemo(() => createColumns(), [tableData, subjectsColors]);
+  }, [tableData, subjectsColors]);
 
   const removeEmptyColumns = () => {
     const newVisibility = {};
