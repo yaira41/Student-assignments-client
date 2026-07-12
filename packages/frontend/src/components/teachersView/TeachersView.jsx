@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TableComponent from "../table/Table.jsx";
 import { useLocation } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, IconButton, Tooltip } from "@mui/material";
 import dataService from "../../utils/dataService.js";
-import "./teachersView.css";
 import { Logout } from "@mui/icons-material";
+import "./teachersView.css";
 
 const TeachersView = () => {
   let location = useLocation();
@@ -57,15 +57,15 @@ const TeachersView = () => {
           }}
         >
           <h1 style={{ margin: "0 1rem 0 0" }}> כיתה {classroom}</h1>
-          <Logout
-            style={{ margin: "0 0 0 8rem", cursor: "pointer" }}
-            color="error"
-            fontSize="large"
-            onClick={handleClick}
-          >
-            {" "}
-            התנתק
-          </Logout>
+          <Tooltip title="התנתק">
+            <IconButton
+              style={{ margin: "0 0 0 8rem", cursor: "pointer" }}
+              color="error"
+              onClick={handleClick}
+            >
+              <Logout fontSize="large" />
+            </IconButton>
+          </Tooltip>
         </div>
 
         {!isLoading ? (

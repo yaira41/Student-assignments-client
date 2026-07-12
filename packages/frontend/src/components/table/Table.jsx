@@ -8,8 +8,8 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { Paper, Button, IconButton, Box, TextField } from "@mui/material";
-import { MoreVert } from "@mui/icons-material";
-import { StyledTable, DataCell } from "./table.styles";
+import { MoreVert, Rotate90DegreesCcw } from "@mui/icons-material";
+import { StyledTable, DataCell, TableContainerWrapper } from "./table.styles";
 import { TableHeader } from "./TableHeader";
 import { ColumnMenu } from "./ColumnMenu";
 import {
@@ -19,6 +19,7 @@ import {
   fuzzyFilter,
   generateBlueShades,
 } from "../../utils/tableUtils";
+import { transform } from "typescript";
 
 const TableComponent = ({ tableData }) => {
   const [sorting, setSorting] = useState([]);
@@ -26,34 +27,50 @@ const TableComponent = ({ tableData }) => {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnResizing, setColumnResizing] = useState({});
   const [columnPinning, setColumnPinning] = useState({
-    left: ["שם התלמידה"],
+    left: [],
     right: [],
   });
 
-  const getColumnStyle = (column, backgroundColor = "#ffffff") => {
-    const a = column.parent === undefined ? true : false;
-    // console.log(column);
+  // החזרת חישוב הרוחב המקורי והגמיש שלך (20rem), יחד עם תמיכה ב-Sticky RTL
+  const getColumnStyle = (
+    column,
+    backgroundColor = "#ffffff",
+    isHeader = false
+  ) => {
+    const isSerial = column.id === "serialNumber";
+    const isName = column.id === "שם התלמידה";
+    const isPinned = isSerial || isName;
+    const isGroupHeader = column.columnDef?.meta === "groupHeader";
+
+    let rightOffset = undefined;
+    if (isSerial) rightOffset = "0px";
+    if (isName) rightOffset = "50px"; // רוחב קבוע ומדויק לעמודת המספר
 
     return {
-      width: `20rem`,
-      boxShadow: columnPinning.left.includes(column.id)
-        ? "4px 0 4px -4px gray inset"
-        : undefined,
-      position: columnPinning.left.includes(column.id) ? "sticky" : "relative",
+      // גמישות מלאה לעמודות רגילות ורוחב מוגדר למעוגנות
+      width: isSerial ? "50px" : isName ? "200px" : "20rem",
+      minWidth: isSerial ? "50px" : isName ? "200px" : "15rem",
+      position: isPinned ? "sticky" : isHeader ? "sticky" : "relative",
+      right: rightOffset,
       left: undefined,
-      right: columnPinning.left.includes(column.id)
-        ? `${column.getAfter("left")}px`
-        : undefined,
-
-      zIndex: columnPinning.left.includes(column.id) ? 1 : 0,
+      // דואג ששורות ה-Header יישארו מעל התוכן בגלילה אנכית, ועמודות Pinned יישארו מעל הכל
+      zIndex: isPinned
+        ? isGroupHeader
+          ? 6
+          : 5
+        : isHeader
+        ? isGroupHeader
+          ? 4
+          : 3
+        : 1,
       backgroundColor:
-        backgroundColor !== "#ffffff" && columnPinning.left.includes(column.id)
+        backgroundColor !== "#ffffff" && isPinned && !isHeader
           ? "#d3e4ea"
           : backgroundColor,
-      opacity: columnPinning.left.includes(column.id) ?? "100%",
       textAlign: "center",
-      borderRight: a ? "" : "1px solid #4092b140",
-      borderBottom: "none",
+      borderRight: isGroupHeader ? "" : "1px solid #4092b140",
+      borderBottom: "1px solid #e0e0e0",
+      boxShadow: isName ? "4px 0 4px -4px gray inset" : undefined,
     };
   };
 
@@ -61,7 +78,7 @@ const TableComponent = ({ tableData }) => {
 
   const data = useMemo(() => processData(tableData), [tableData]);
   const subjectsColors = useMemo(
-    () => generateBlueShades(Object.keys(data?.[0]).length || 0),
+    () => generateBlueShades(Object.keys(data?.[0] || {}).length || 0),
     [data]
   );
   const columnHelper = createColumnHelper();
@@ -69,8 +86,14 @@ const TableComponent = ({ tableData }) => {
   const createColumns = () => {
     const columns = [
       columnHelper.accessor("serialNumber", {
-        header: "",
-        cell: (info) => info.row.index + 1,
+        id: "serialNumber",
+        header: "#",
+        cell: (info) => {
+          if (info.row.id === "0") {
+            return;
+          }
+          return info.row.index;
+        },
         enableSorting: false,
         size: 50,
         enablePinning: false,
@@ -101,16 +124,12 @@ const TableComponent = ({ tableData }) => {
                 <TableHeader
                   column={column}
                   header={header}
-                  isPinned={
-                    columnPinning.left.includes(column.id) ||
-                    columnPinning.right.includes(column.id)
-                  }
-                  onTogglePin={(side) => handleColumnPinning(column.id, side)}
+                  isPinned={column.id === "שם התלמידה"}
+                  onTogglePin={() => {}}
                 />
               ),
               cell: (info) => {
                 const cellContent = info.row.original[info.column.id];
-                let grade;
 
                 if (typeof cellContent === "string") {
                   if (cellContent === "חסר") {
@@ -127,10 +146,17 @@ const TableComponent = ({ tableData }) => {
                       </span>
                     );
                   }
-                } else if (!isNaN(cellContent)) {
-                  grade = Math.round(cellContent);
+                } else if (
+                  typeof cellContent === "number" &&
+                  !isNaN(cellContent)
+                ) {
+                  // שומר על שברים כמו 0.35 ללא עיגול
+                  if (cellContent > 0 && cellContent < 1) {
+                    return cellContent;
+                  }
+                  return Math.round(cellContent);
                 }
-                return grade ? grade : cellContent;
+                return cellContent;
               },
               sortingFn: createSortingFunction,
               filterFn: fuzzyFilter,
@@ -145,29 +171,7 @@ const TableComponent = ({ tableData }) => {
     return columns;
   };
 
-  // const columns = useCallback(() => createColumns(), [columnPinning]);
-  const columns = createColumns();
-
-  const handleColumnPinning = (columnId, side) => {
-    setColumnPinning((prev) => {
-      const leftIndex = prev.left.indexOf(columnId);
-      const rightIndex = prev.right.indexOf(columnId);
-
-      if (leftIndex !== -1 || rightIndex !== -1) {
-        // If already pinned, unpin
-        return {
-          left: prev.left.filter((id) => id !== columnId),
-          right: prev.right.filter((id) => id !== columnId),
-        };
-      }
-
-      // Pin to the specified side
-      return {
-        ...prev,
-        [side]: [...prev[side], columnId],
-      };
-    });
-  };
+  const columns = useMemo(() => createColumns(), [tableData, subjectsColors]);
 
   const removeEmptyColumns = () => {
     const newVisibility = {};
@@ -175,7 +179,12 @@ const TableComponent = ({ tableData }) => {
       if (group.columns) {
         group.columns.forEach((col) => {
           if (col.accessorKey) {
-            const hasValues = data.some((row) => row[col.accessorKey]);
+            const hasValues = data.some((row) => {
+              if (!row["תז"]) {
+                return "";
+              }
+              return row[col.accessorKey];
+            });
             newVisibility[col.accessorKey] = hasValues;
           }
         });
@@ -183,10 +192,6 @@ const TableComponent = ({ tableData }) => {
     });
     setColumnVisibility(newVisibility);
   };
-
-  // const resetFilters = () => {
-  //   setColumnFilters([]);
-  // };
 
   const table = useReactTable({
     data,
@@ -229,14 +234,13 @@ const TableComponent = ({ tableData }) => {
   };
 
   return (
-    <Box id="mainTable" sx={{ direction: "rtl" }}>
+    <Box id="mainTable" sx={{ direction: "rtl", width: "100%" }}>
       <Box
         sx={{
-          width: "fit-content",
           p: 2,
           display: "flex",
           gap: 2,
-          marginRight: "-2rem",
+          alignItems: "center",
         }}
       >
         <IconButton onClick={(e) => setMenuAnchorEl(e.currentTarget)}>
@@ -250,8 +254,7 @@ const TableComponent = ({ tableData }) => {
           הסרת עמודות ריקות
         </Button>
         <TextField
-          sx={{ height: "20px !important" }}
-          margin="normal"
+          size="small"
           placeholder="סנן שם תלמידה"
           value={
             table
@@ -262,12 +265,13 @@ const TableComponent = ({ tableData }) => {
           onChange={(e) =>
             table
               .getHeaderGroups()[1]
-              .headers?.find((x) => x.id === "שם התלמידה")
-              .column.setFilterValue(e.target.value)
+              ?.headers?.find((x) => x.id === "שם התלמידה")
+              ?.column.setFilterValue(e.target.value)
           }
           onClick={(e) => e.stopPropagation()}
         />
       </Box>
+
       <ColumnMenu
         anchorEl={menuAnchorEl}
         onClose={() => setMenuAnchorEl(null)}
@@ -277,73 +281,68 @@ const TableComponent = ({ tableData }) => {
         onSelectAllToggle={handleSelectAllToggle}
         tableData={tableData}
         columnPinning={columnPinning}
-        onColumnPinning={handleColumnPinning}
+        onColumnPinning={() => {}}
       />
-      <Paper
-        elevation={2}
-        sx={{
-          overflow: "auto",
-          width: "93%",
-          height: "43rem",
-          margin: "0 0 20px 0",
-        }}
-      >
+
+      <TableContainerWrapper elevation={2}>
         <StyledTable>
-          <thead style={{ height: "5rem" }}>
-            {table.getHeaderGroups().map((headerGroup) => (
+          <thead>
+            {table.getHeaderGroups().map((headerGroup, groupIndex) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers?.map((header) => (
-                  <th
-                    key={header.id}
-                    colSpan={header.colSpan}
-                    style={getColumnStyle(header.column)}
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                  </th>
-                ))}
+                {headerGroup.headers?.map((header) => {
+                  // חישוב ה-Top הדינמי לכל אחת מ-3 שורות הכותרת כדי שלא ירכבו אחת על השניה
+                  let topOffset = "0px";
+                  if (groupIndex === 1) topOffset = "45px"; // גובה משוער של השורה הראשונה
+                  if (groupIndex === 2) topOffset = "95px"; // גובה משוער של השורה הראשונה + השניה
+
+                  const baseStyle = getColumnStyle(
+                    header.column,
+                    "#f8fafd",
+                    true
+                  );
+                  return (
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      style={{
+                        ...baseStyle,
+                        top: topOffset,
+                        transform: "rotate(-90deg)",
+                        transformOrigin: "center",
+                      }}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                    </th>
+                  );
+                })}
               </tr>
             ))}
-            {/* {table.getHeaderGroups().map((headerGroup, index) => {
-              if (headerGroup.id !== "0") {
-                return (
-                  <FilterRow
-                    key={"filter-row" + index}
-                    headers={headerGroup.headers}
-                    style={(column) => getColumnStyle(column)}
-                  />
-                );
-              } else {
-                return <></>;
-              }
-            })} */}
           </thead>
           <tbody>
-            {table.getRowModel().rows.map((row, index) => (
-              <tr
-                key={row.id}
-                style={{
-                  backgroundColor: index % 2 !== 0 ? "#ffffff" : "#4092b114",
-                }}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <DataCell
-                    key={cell.id}
-                    style={getColumnStyle(
-                      cell.column,
-                      index % 2 !== 0 ? "#ffffff" : "#4092b114"
-                    )}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </DataCell>
-                ))}
-              </tr>
-            ))}
+            {table.getRowModel().rows.map((row, index) => {
+              const rowBg = index % 2 !== 0 ? "#ffffff" : "#4092b114";
+              return (
+                <tr key={row.id} style={{ backgroundColor: rowBg }}>
+                  {row.getVisibleCells().map((cell) => (
+                    <DataCell
+                      key={cell.id}
+                      style={getColumnStyle(cell.column, rowBg, false)}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </DataCell>
+                  ))}
+                </tr>
+              );
+            })}
           </tbody>
         </StyledTable>
-      </Paper>
+      </TableContainerWrapper>
     </Box>
   );
 };
