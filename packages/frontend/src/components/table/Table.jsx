@@ -25,12 +25,8 @@ const TableComponent = ({ tableData }) => {
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [columnResizing, setColumnResizing] = useState({});
-  const [columnPinning, setColumnPinning] = useState({
-    left: [],
-    right: [],
-  });
+  const [columnPinning, setColumnPinning] = useState({ left: [], right: [] });
 
-  // החזרת חישוב הרוחב המקורי והגמיש שלך (20rem), יחד עם תמיכה ב-Sticky RTL
   const getColumnStyle = (
     column,
     backgroundColor = "#ffffff",
@@ -43,16 +39,15 @@ const TableComponent = ({ tableData }) => {
 
     let rightOffset = undefined;
     if (isSerial) rightOffset = "0px";
-    if (isName) rightOffset = "50px"; // רוחב קבוע ומדויק לעמודת המספר
+    if (isName) rightOffset = "60px";
 
     return {
-      // גמישות מלאה לעמודות רגילות ורוחב מוגדר למעוגנות
-      width: isSerial ? "50px" : isName ? "200px" : "20rem",
-      minWidth: isSerial ? "50px" : isName ? "200px" : "15rem",
+      // עמודות אנכיות תופסות הרבה פחות רוחב כעת! (מ-20rem ירדנו ל-4.5rem בשביל המראה האנכי)
+      width: isSerial ? "60px" : isName ? "200px" : "4.5rem",
+      minWidth: isSerial ? "60px" : isName ? "200px" : "4.5rem",
       position: isPinned ? "sticky" : isHeader ? "sticky" : "relative",
       right: rightOffset,
       left: undefined,
-      // דואג ששורות ה-Header יישארו מעל התוכן בגלילה אנכית, ועמודות Pinned יישארו מעל הכל
       zIndex: isPinned
         ? isGroupHeader
           ? 6
@@ -87,14 +82,9 @@ const TableComponent = ({ tableData }) => {
       columnHelper.accessor("serialNumber", {
         id: "serialNumber",
         header: "#",
-        cell: (info) => {
-          if (info.row.id === "0") {
-            return;
-          }
-          return info.row.index;
-        },
+        cell: (info) => info.row.index + 1,
         enableSorting: false,
-        size: 50,
+        size: 60,
         enablePinning: false,
       }),
     ];
@@ -123,7 +113,9 @@ const TableComponent = ({ tableData }) => {
                 <TableHeader
                   column={column}
                   header={header}
-                  isPinned={column.id === "שם התלמידה"}
+                  isPinned={
+                    column.id === "שם התלמידה" || column.id === "serialNumber"
+                  }
                   onTogglePin={() => {}}
                 />
               ),
@@ -149,7 +141,6 @@ const TableComponent = ({ tableData }) => {
                   typeof cellContent === "number" &&
                   !isNaN(cellContent)
                 ) {
-                  // שומר על שברים כמו 0.35 ללא עיגול
                   if (cellContent > 0 && cellContent < 1) {
                     return cellContent;
                   }
@@ -159,7 +150,7 @@ const TableComponent = ({ tableData }) => {
               },
               sortingFn: createSortingFunction,
               filterFn: fuzzyFilter,
-              size: 200,
+              size: 80,
             })
           ),
         });
@@ -234,14 +225,7 @@ const TableComponent = ({ tableData }) => {
 
   return (
     <Box id="mainTable" sx={{ direction: "rtl", width: "100%" }}>
-      <Box
-        sx={{
-          p: 2,
-          display: "flex",
-          gap: 2,
-          alignItems: "center",
-        }}
-      >
+      <Box sx={{ p: 2, display: "flex", gap: 2, alignItems: "center" }}>
         <IconButton onClick={(e) => setMenuAnchorEl(e.currentTarget)}>
           <MoreVert />
         </IconButton>
@@ -289,10 +273,10 @@ const TableComponent = ({ tableData }) => {
             {table.getHeaderGroups().map((headerGroup, groupIndex) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers?.map((header) => {
-                  // חישוב ה-Top הדינמי לכל אחת מ-3 שורות הכותרת כדי שלא ירכבו אחת על השניה
+                  // חישוב גבהים דינמי ל-3 שורות הכותרת כדי למנוע חפיפות
                   let topOffset = "0px";
-                  if (groupIndex === 1) topOffset = "45px"; // גובה משוער של השורה הראשונה
-                  if (groupIndex === 2) topOffset = "95px"; // גובה משוער של השורה הראשונה + השניה
+                  if (groupIndex === 1) topOffset = "48px";
+                  if (groupIndex === 2) topOffset = "96px";
 
                   const baseStyle = getColumnStyle(
                     header.column,
@@ -306,6 +290,7 @@ const TableComponent = ({ tableData }) => {
                       style={{
                         ...baseStyle,
                         top: topOffset,
+                        verticalAlign: "bottom", // דואג שהטקסט האנכי יישב יפה מלמטה
                       }}
                     >
                       {flexRender(

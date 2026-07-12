@@ -8,7 +8,7 @@ export const TableContainerWrapper = styled(Paper)({
   borderRadius: "8px",
   border: "1px solid #e0e0e0",
 
-  /* פסי גלילה בולטים ונוחים למשתמש (Scrollbars) */
+  /* פסי גלילה בולטים וברורים למשתמש */
   "&::-webkit-scrollbar": {
     width: "12px",
     height: "12px",
@@ -31,7 +31,6 @@ export const StyledTable = styled("table")({
   width: "100%",
   borderCollapse: "separate",
   borderSpacing: 0,
-  // החזרת המצב המקורי - הדפדפן מחשב רוחב דינמי לעמודות ולא מועך אותן
   tableLayout: "auto",
 
   "& thead": {
@@ -42,6 +41,7 @@ export const StyledTable = styled("table")({
   "& th": {
     position: "sticky",
     borderBottom: "2px solid #4092b140",
+    padding: 0,
   },
 });
 
@@ -53,19 +53,21 @@ export const HeaderCell = styled("th")({
 });
 
 export const HeaderContent = styled("div")({
-  padding: "16px",
+  padding: "12px 4px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
   transition: "background-color 0.2s",
+  boxSizing: "border-box",
   "&:hover": {
     backgroundColor: "#eff5f8",
   },
 });
 
 export const DataCell = styled("td")({
-  padding: "12px 16px",
+  padding: "12px 8px",
   fontSize: "0.875rem",
   transition: "background-color 0.2s",
+  whiteSpace: "nowrap",
 });

@@ -9,49 +9,72 @@ export const TableHeader = ({
   isPinned = false,
   onTogglePin,
 }) => {
-  console.log({ isPinned, onTogglePin });
   const sortDir = column.getIsSorted();
-  // const isPinable = header === "שם התלמידה";
+  const isSerial = column.id === "serialNumber";
+  const isName = column.id === "שם התלמידה";
 
-  // const handlePinLeft = () => {
-  //   onTogglePin("left");
-  // };
+  // רק עמודות הנתונים הרגילות (לא המוצמדות) יהיו לאורך
+  const isVertical = !isSerial && !isName;
 
   const handleSort = (e) => {
-    // Prevent sort when clicking the pin button
-
     if (e.target.closest("button")) return;
-
     column.toggleSorting();
   };
 
   return (
-    <HeaderContent onClick={handleSort}>
+    <HeaderContent
+      onClick={handleSort}
+      style={{
+        height: isVertical ? "160px" : "100%",
+        justifyContent: "center",
+      }}
+    >
       <Box
         sx={{
           display: "flex",
+          flexDirection: isVertical ? "column-reverse" : "row",
           alignItems: "center",
+          justifyContent: "center",
           gap: 1,
+          height: "100%",
         }}
       >
         <span
-          style={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            maxWidth: "200px",
-          }}
+          style={
+            isVertical
+              ? {
+                  writingMode: "vertical-rl",
+                  transform: "rotate(180deg)",
+                  whiteSpace: "nowrap",
+                  maxHeight: "140px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  fontWeight: 500,
+                }
+              : {
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  maxWidth: "180px",
+                }
+          }
           title={header}
         >
-          {header.length > 15 ? `${header.substring(0, 15)}...` : header}
+          {header}
         </span>
 
-        <Box>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           {sortDir &&
             (sortDir === "asc" ? (
-              <KeyboardArrowUp color="primary" />
+              <KeyboardArrowUp color="primary" fontSize="small" />
             ) : (
-              <KeyboardArrowDown color="primary" />
+              <KeyboardArrowDown color="primary" fontSize="small" />
             ))}
         </Box>
       </Box>
