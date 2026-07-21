@@ -40,6 +40,8 @@ export const TableHeader = ({
         }}
       >
         <span
+          className="notranslate"
+          translate="no"
           style={
             isVertical
               ? {
