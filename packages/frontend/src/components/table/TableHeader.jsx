@@ -1,6 +1,6 @@
 import React from "react";
 import { Box } from "@mui/material";
-import { KeyboardArrowUp, KeyboardArrowDown } from "@mui/icons-material";
+import { KeyboardArrowUp, KeyboardArrowDown, Star } from "@mui/icons-material";
 import { HeaderContent } from "./table.styles";
 
 export const TableHeader = ({
@@ -12,9 +12,10 @@ export const TableHeader = ({
   const sortDir = column.getIsSorted();
   const isSerial = column.id === "serialNumber";
   const isName = column.id === "שם התלמידה";
-
-  // רק עמודות הנתונים הרגילות (לא המוצמדות) יהיו לאורך
   const isVertical = !isSerial && !isName;
+
+  const isFinalGrade =
+    typeof header === "string" && header.includes("ציון סופי");
 
   const handleSort = (e) => {
     if (e.target.closest("button")) return;
@@ -25,7 +26,7 @@ export const TableHeader = ({
     <HeaderContent
       onClick={handleSort}
       style={{
-        height: isVertical ? "160px" : "100%",
+        height: isVertical ? "150px" : "100%",
         justifyContent: "center",
       }}
     >
@@ -35,7 +36,7 @@ export const TableHeader = ({
           flexDirection: isVertical ? "column-reverse" : "row",
           alignItems: "center",
           justifyContent: "center",
-          gap: 1,
+          gap: 0.5,
           height: "100%",
         }}
       >
@@ -48,21 +49,35 @@ export const TableHeader = ({
                   writingMode: "vertical-rl",
                   transform: "rotate(180deg)",
                   whiteSpace: "nowrap",
-                  maxHeight: "140px",
+                  maxHeight: "130px",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                  fontWeight: 500,
+                  fontWeight: isFinalGrade ? 800 : 600,
+                  fontSize: "0.82rem",
+                  color: "#475569",
                 }
               : {
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
                   maxWidth: "180px",
+                  fontWeight: 600,
+                  color: isFinalGrade ? "#1e293b" : "#475569",
                 }
           }
           title={header}
         >
           {header}
+          {isFinalGrade && (
+            <Star
+              sx={{
+                fontSize: "0.9rem",
+                color: "#f59e0b",
+                marginBottom: "0.3rem",
+                transform: isVertical ? "rotate(90deg)" : "none",
+              }}
+            />
+          )}
         </span>
 
         <Box
@@ -70,13 +85,14 @@ export const TableHeader = ({
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            minHeight: "18px",
           }}
         >
           {sortDir &&
             (sortDir === "asc" ? (
-              <KeyboardArrowUp color="primary" fontSize="small" />
+              <KeyboardArrowUp sx={{ color: "#457b9d" }} fontSize="small" />
             ) : (
-              <KeyboardArrowDown color="primary" fontSize="small" />
+              <KeyboardArrowDown sx={{ color: "#457b9d" }} fontSize="small" />
             ))}
         </Box>
       </Box>
