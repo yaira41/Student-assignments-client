@@ -8,8 +8,13 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { Button, IconButton, Box, TextField } from "@mui/material";
-import { MoreVert } from "@mui/icons-material";
-import { StyledTable, DataCell, TableContainerWrapper } from "./table.styles";
+import { MoreVert, School } from "@mui/icons-material";
+import {
+  StyledTable,
+  DataCell,
+  TableContainerWrapper,
+  SubjectGroupHeader,
+} from "./table.styles";
 import { TableHeader } from "./TableHeader";
 import { ColumnMenu } from "./ColumnMenu";
 import {
@@ -17,8 +22,19 @@ import {
   createSortingFunction,
   processData,
   fuzzyFilter,
-  generateBlueShades,
 } from "../../utils/tableUtils";
+
+// פלטת צבעים מודרנית ורכה למקצועות השונים
+const MODERN_PALETTE = [
+  { main: "#2a9d8f", light: "rgba(42, 157, 143, 0.08)", text: "#ffffff" },
+  { main: "#6a4c93", light: "rgba(106, 76, 147, 0.08)", text: "#ffffff" },
+  { main: "#f4a261", light: "rgba(244, 162, 97, 0.08)", text: "#ffffff" },
+  { main: "#1d3557", light: "rgba(29, 53, 87, 0.08)", text: "#ffffff" },
+  { main: "#e63946", light: "rgba(230, 57, 70, 0.08)", text: "#ffffff" },
+  { main: "#457b9d", light: "rgba(69, 123, 157, 0.08)", text: "#ffffff" },
+  { main: "#83c5be", light: "rgba(131, 197, 190, 0.08)", text: "#1d3557" },
+  { main: "#ffb703", light: "rgba(255, 183, 3, 0.08)", text: "#1d3557" },
+];
 
 const TableComponent = ({ tableData }) => {
   const [sorting, setSorting] = useState([]);
@@ -27,10 +43,24 @@ const TableComponent = ({ tableData }) => {
   const [columnResizing, setColumnResizing] = useState({});
   const [columnPinning, setColumnPinning] = useState({ left: [], right: [] });
 
+  const data = useMemo(() => processData(tableData), [tableData]);
+
+  // מיפוי קבוע של קבוצות מקצועות לצבעים כדי לשמור על עקביות
+  const groupColors = useMemo(() => {
+    const groups = Object.keys(getHeadersGroups(tableData) || {});
+    const mapping = {};
+    groups.forEach((groupName, index) => {
+      // אם יש יותר מקצועות מצבעים, חוזרים על הצבעים בעזרת פעולת שארית (Mod)
+      mapping[groupName] = MODERN_PALETTE[index % MODERN_PALETTE.length];
+    });
+    return mapping;
+  }, [tableData]);
+
   const getColumnStyle = (
     column,
     backgroundColor = "#ffffff",
-    isHeader = false
+    isHeader = false,
+    groupName = ""
   ) => {
     const isSerial = column.id === "serialNumber";
     const isName = column.id === "שם התלמידה";
@@ -41,8 +71,15 @@ const TableComponent = ({ tableData }) => {
     if (isSerial) rightOffset = "0px";
     if (isName) rightOffset = "60px";
 
+    // קביעת הרקע לעמודות עם הילה (Glow) בהתאם למקצוע שלהן
+    let finalBg = backgroundColor;
+    if (!isHeader && !isPinned && groupName && groupColors[groupName]) {
+      finalBg = groupColors[groupName].light;
+    } else if (isPinned && !isHeader) {
+      finalBg = "#f4f8fa"; // גוון נקי לעמודות המוצמדות
+    }
+
     return {
-      // עמודות אנכיות תופסות הרבה פחות רוחב כעת! (מ-20rem ירדנו ל-4.5rem בשביל המראה האנכי)
       width: isSerial ? "60px" : isName ? "200px" : "4.5rem",
       minWidth: isSerial ? "60px" : isName ? "200px" : "4.5rem",
       position: isPinned ? "sticky" : isHeader ? "sticky" : "relative",
@@ -57,24 +94,15 @@ const TableComponent = ({ tableData }) => {
           ? 4
           : 3
         : 1,
-      backgroundColor:
-        backgroundColor !== "#ffffff" && isPinned && !isHeader
-          ? "#d3e4ea"
-          : backgroundColor,
+      backgroundColor: finalBg,
       textAlign: "center",
-      borderRight: isGroupHeader ? "" : "1px solid #4092b140",
-      borderBottom: "1px solid #e0e0e0",
-      boxShadow: isName ? "4px 0 4px -4px gray inset" : undefined,
+      borderRight: isGroupHeader ? "" : "1px solid rgba(64, 146, 177, 0.15)",
+      borderBottom: "1px solid #eef2f5",
+      boxShadow: isName ? "4px 0 8px -4px rgba(0,0,0,0.15) inset" : undefined,
     };
   };
 
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-
-  const data = useMemo(() => processData(tableData), [tableData]);
-  const subjectsColors = useMemo(
-    () => generateBlueShades(Object.keys(data?.[0] || {}).length || 0),
-    [data]
-  );
   const columnHelper = createColumnHelper();
 
   const columns = useMemo(() => {
@@ -89,77 +117,124 @@ const TableComponent = ({ tableData }) => {
       }),
     ];
 
-    Object.entries(getHeadersGroups(tableData)).forEach(
-      ([key, values], index) => {
-        const group = columnHelper.group({
-          id: key,
-          meta: "groupHeader",
-          header: () => (
-            <Box
-              sx={{
-                padding: "12px 16px",
-                marginRight: key !== "כללי" && "10px",
-                minWidth: "max-content",
-                fontWeight: 600,
-                backgroundColor: subjectsColors[index],
-              }}
-            >
-              {key}
-            </Box>
-          ),
-          columns: values.map(({ accessorKey, header }) =>
-            columnHelper.accessor(accessorKey, {
-              header: ({ column }) => (
-                <TableHeader
-                  column={column}
-                  header={header}
-                  isPinned={
-                    column.id === "שם התלמידה" || column.id === "serialNumber"
-                  }
-                  onTogglePin={() => {}}
-                />
-              ),
-              cell: (info) => {
-                const cellContent = info.row.original[info.column.id];
+    Object.entries(getHeadersGroups(tableData)).forEach(([key, values]) => {
+      const currentColors = groupColors[key] || {
+        main: "#f8fafd",
+        text: "#333",
+      };
 
-                if (typeof cellContent === "string") {
-                  if (cellContent === "חסר") {
-                    return (
-                      <span
-                        style={{
-                          background: "#f35858",
-                          padding: "2px 5px",
-                          borderRadius: "8px",
-                          color: "white",
-                        }}
-                      >
-                        {cellContent}
-                      </span>
-                    );
-                  }
-                } else if (
-                  typeof cellContent === "number" &&
-                  !isNaN(cellContent)
-                ) {
-                  if (cellContent > 0 && cellContent < 1) {
-                    return cellContent;
-                  }
-                  return Math.round(cellContent);
+      const group = columnHelper.group({
+        id: key,
+        meta: "groupHeader",
+        header: () => (
+          <SubjectGroupHeader
+            style={{
+              backgroundColor: currentColors.main,
+              color: currentColors.text,
+            }}
+          >
+            {key}
+          </SubjectGroupHeader>
+        ),
+        columns: values.map(({ accessorKey, header }) =>
+          columnHelper.accessor(accessorKey, {
+            header: ({ column }) => (
+              <TableHeader
+                column={column}
+                header={header}
+                isPinned={
+                  column.id === "שם התלמידה" || column.id === "serialNumber"
                 }
-                return cellContent;
-              },
-              sortingFn: createSortingFunction,
-              filterFn: fuzzyFilter,
-              size: 80,
-            })
-          ),
-        });
-        columns.push(group);
-      }
-    );
+                onTogglePin={() => {}}
+              />
+            ),
+            cell: (info) => {
+              const cellContent = info.row.original[info.column.id];
+              const isFinalGrade =
+                header &&
+                typeof header === "string" &&
+                header.includes("ציון סופי");
+
+              if (info.column.id === "שם התלמידה") {
+                return (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      px: 1,
+                    }}
+                  >
+                    <School sx={{ fontSize: "1.1rem", color: "#457b9d" }} />
+                    <span style={{ fontWeight: 600, color: "#2b2d42" }}>
+                      {cellContent}
+                    </span>
+                  </Box>
+                );
+              }
+
+              if (typeof cellContent === "string") {
+                if (cellContent === "חסר") {
+                  return (
+                    <span
+                      style={{
+                        background: "#e63946",
+                        padding: "4px 8px",
+                        borderRadius: "20px",
+                        color: "white",
+                        fontSize: "0.75rem",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {cellContent}
+                    </span>
+                  );
+                }
+              } else if (
+                typeof cellContent === "number" &&
+                !isNaN(cellContent)
+              ) {
+                if (cellContent > 0 && cellContent < 1) {
+                  return cellContent;
+                } else if (
+                  isFinalGrade &&
+                  cellContent !== undefined &&
+                  cellContent !== null &&
+                  cellContent !== ""
+                ) {
+                  return (
+                    <span
+                      style={{
+                        // fontWeight: "800",
+                        fontSize: "0.95rem",
+                        // color: "#0f172a",
+                        backgroundColor: "rgba(255, 255, 255, 0.7)",
+                        padding: "3px 8px",
+                        borderRadius: "6px",
+                        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                        border: "1px solid rgba(0,0,0,0.06)",
+                        display: "inline-block",
+                      }}
+                    >
+                      {Math.round(cellContent)}
+                    </span>
+                  );
+                }
+                return Math.round(cellContent);
+              }
+              return cellContent;
+            },
+            sortingFn: createSortingFunction,
+            filterFn: fuzzyFilter,
+            size: 80,
+          })
+        ),
+      });
+      columns.push(group);
+    });
 
     return columns;
-  }, [tableData, subjectsColors, columnHelper]);
+  }, [tableData, groupColors, columnHelper]);
 
   const removeEmptyColumns = () => {
     const newVisibility = {};
@@ -168,9 +243,7 @@ const TableComponent = ({ tableData }) => {
         group.columns.forEach((col) => {
           if (col.accessorKey) {
             const hasValues = data.some((row) => {
-              if (!row["תז"]) {
-                return "";
-              }
+              if (!row["תז"]) return "";
               return row[col.accessorKey];
             });
             newVisibility[col.accessorKey] = hasValues;
@@ -222,21 +295,43 @@ const TableComponent = ({ tableData }) => {
   };
 
   return (
-    <Box id="mainTable" sx={{ direction: "rtl", width: "100%" }}>
-      <Box sx={{ p: 2, display: "flex", gap: 2, alignItems: "center" }}>
-        <IconButton onClick={(e) => setMenuAnchorEl(e.currentTarget)}>
+    <Box id="mainTable" sx={{ direction: "rtl", width: "100%", p: 1 }}>
+      <Box
+        sx={{
+          p: 2,
+          display: "flex",
+          gap: 2,
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <IconButton
+          onClick={(e) => setMenuAnchorEl(e.currentTarget)}
+          sx={{ backgroundColor: "#f0f4f8" }}
+        >
           <MoreVert />
         </IconButton>
         <Button
           variant="contained"
           onClick={removeEmptyColumns}
-          style={{ backgroundColor: "rgb(50 129 158 / 70%)" }}
+          sx={{
+            backgroundColor: "#457b9d",
+            textTransform: "none",
+            borderRadius: "8px",
+            boxShadow: "none",
+            "&:hover": { backgroundColor: "#1d3557" },
+          }}
         >
           הסרת עמודות ריקות
         </Button>
         <TextField
           size="small"
-          placeholder="סנן שם תלמידה"
+          placeholder="חיפוש שם תלמידה..."
+          variant="outlined"
+          sx={{
+            minWidth: "240px",
+            "& .MuiOutlinedInput-root": { borderRadius: "8px" },
+          }}
           value={
             table
               .getHeaderGroups()[1]
@@ -265,21 +360,24 @@ const TableComponent = ({ tableData }) => {
         onColumnPinning={() => {}}
       />
 
-      <TableContainerWrapper elevation={2}>
+      <TableContainerWrapper elevation={0}>
         <StyledTable>
           <thead>
             {table.getHeaderGroups().map((headerGroup, groupIndex) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers?.map((header) => {
-                  // חישוב גבהים דינמי ל-3 שורות הכותרת כדי למנוע חפיפות
                   let topOffset = "0px";
                   if (groupIndex === 1) topOffset = "48px";
                   if (groupIndex === 2) topOffset = "96px";
 
+                  // מציאת שם הקבוצה (המקצוע) לצורך העברת הצבע הנכון
+                  const groupName = header.column.parent?.id || "";
+
                   const baseStyle = getColumnStyle(
                     header.column,
-                    "#f8fafd",
-                    true
+                    "#ffffff",
+                    true,
+                    groupName
                   );
                   return (
                     <th
@@ -288,7 +386,7 @@ const TableComponent = ({ tableData }) => {
                       style={{
                         ...baseStyle,
                         top: topOffset,
-                        verticalAlign: "bottom", // דואג שהטקסט האנכי יישב יפה מלמטה
+                        verticalAlign: "bottom",
                       }}
                     >
                       {flexRender(
@@ -303,20 +401,29 @@ const TableComponent = ({ tableData }) => {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row, index) => {
-              const rowBg = index % 2 !== 0 ? "#ffffff" : "#4092b114";
+              const rowBg =
+                index % 2 !== 0 ? "#ffffff" : "rgba(240, 244, 248, 0.4)";
               return (
-                <tr key={row.id} style={{ backgroundColor: rowBg }}>
-                  {row.getVisibleCells().map((cell) => (
-                    <DataCell
-                      key={cell.id}
-                      style={getColumnStyle(cell.column, rowBg, false)}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </DataCell>
-                  ))}
+                <tr key={row.id}>
+                  {row.getVisibleCells().map((cell) => {
+                    const groupName = cell.column.parent?.id || "";
+                    return (
+                      <DataCell
+                        key={cell.id}
+                        style={getColumnStyle(
+                          cell.column,
+                          rowBg,
+                          false,
+                          groupName
+                        )}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </DataCell>
+                    );
+                  })}
                 </tr>
               );
             })}

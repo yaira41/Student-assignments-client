@@ -40,12 +40,22 @@ const TeachersView = () => {
   }, [classroom]);
 
   return (
-    <div className="back-pic2">
+    <div
+      className="back-pic2"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        width: "100%",
+      }}
+    >
       <div
         style={{
           maxWidth: "100%",
-          height: "40rem",
-          marginRight: "10rem",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
         <div
@@ -53,13 +63,15 @@ const TeachersView = () => {
             display: "flex",
             flexDirection: "row-reverse",
             justifyContent: "space-between",
-            margin: "4rem 0 0 0",
+            alignItems: "center",
+            width: "100%",
+            gap: "2rem",
           }}
         >
-          <h1 style={{ margin: "0 1rem 0 0" }}> כיתה {classroom}</h1>
+          <h1 style={{ margin: 0 }}> כיתה {classroom}</h1>
           <Tooltip title="התנתק">
             <IconButton
-              style={{ margin: "0 0 0 8rem", cursor: "pointer" }}
+              style={{ cursor: "pointer" }}
               color="error"
               onClick={handleClick}
             >
